@@ -1,0 +1,6 @@
+@ASP.Net_Rules_HostAddress = http://localhost:5152
+
+GET {{ASP.Net_Rules_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
