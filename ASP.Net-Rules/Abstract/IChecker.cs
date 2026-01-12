@@ -285,34 +285,16 @@ Hər bir middleware sorğunu emal edə bilər və ya növbəti middleware-ə öt
 mal sifarişi zamanı authorization olmazsa add to Basket işi işləməz buda bizə daha təhlükəsiz və strukturlaşdırılmış kod yazmağa imkan verir.
 
 
-İndi gəlin mini COR nümunəsi yazaq ki, istifadəçi qeydiyyatı zamanı müxtəlif yoxlamalar aparaq.
+İndi gəlin mini asp quraq:
 
 */
 
 
-//interface IChecker // Bu interface Chain of Responsibility pattern üçün istifadə olunur.
-//{
-//    public IChecker Next { get; set; }
-//    bool Check(object obj);
-//}
-
-//class UsernameChecker : BaseChecker // Bu class istifadəçi adını yoxlayır.
-//{
-//    public override bool Check(object obj)
-//    {
-//        var user = obj as User;
-//        if (string.IsNullOrEmpty(user.Username) || user.Username.Length < 3)
-//        {
-//            Console.WriteLine("Username is invalid.");
-//            return false;
-//        }
-//        if (Next != null)
-//        {
-//            return Next.Check(obj);
-//        }
-//        return true;
-//    }
-//}
+interface IChecker // Bu interface Chain of Responsibility pattern üçün istifadə olunur.
+{
+    public IChecker Next { get; set; }
+    bool Check(object obj);
+}
 
 //class PasswordChecker : BaseChecker // Bu class şifrəni yoxlayır.
 //{
@@ -349,12 +331,6 @@ mal sifarişi zamanı authorization olmazsa add to Basket işi işləməz buda b
 //        return true;
 //    }
 //}
-
-using ASP.Net_Rules.Concrete;
-
-User user = new() { Username = "salam", Password = "Salam12345", Email = "salam@salam.com" };
-var director = new CheckDirector();
-Console.WriteLine(director.MakeUserChecker(user));
 
 
 
