@@ -287,68 +287,67 @@ mal sifarişi zamanı authorization olmazsa add to Basket işi işləməz buda b
 
 İndi gəlin mini COR nümunəsi yazaq ki, istifadəçi qeydiyyatı zamanı müxtəlif yoxlamalar aparaq.
 
-*/
 
 
-//interface IChecker // Bu interface Chain of Responsibility pattern üçün istifadə olunur.
-//{
-//    public IChecker Next { get; set; }
-//    bool Check(object obj);
-//}
+interface IChecker // Bu interface Chain of Responsibility pattern üçün istifadə olunur.
+{
+    public IChecker Next { get; set; }
+    bool Check(object obj);
+}
 
-//class UsernameChecker : BaseChecker // Bu class istifadəçi adını yoxlayır.
-//{
-//    public override bool Check(object obj)
-//    {
-//        var user = obj as User;
-//        if (string.IsNullOrEmpty(user.Username) || user.Username.Length < 3)
-//        {
-//            Console.WriteLine("Username is invalid.");
-//            return false;
-//        }
-//        if (Next != null)
-//        {
-//            return Next.Check(obj);
-//        }
-//        return true;
-//    }
-//}
+class UsernameChecker : BaseChecker // Bu class istifadəçi adını yoxlayır.
+{
+    public override bool Check(object obj)
+    {
+        var user = obj as User;
+        if (string.IsNullOrEmpty(user.Username) || user.Username.Length < 3)
+        {
+            Console.WriteLine("Username is invalid.");
+            return false;
+        }
+        if (Next != null)
+        {
+            return Next.Check(obj);
+        }
+        return true;
+    }
+}
 
-//class PasswordChecker : BaseChecker // Bu class şifrəni yoxlayır.
-//{
-//    public override bool Check(object obj)
-//    {
-//        var user = obj as User;
-//        if (string.IsNullOrEmpty(user.Password) || user.Password.Length < 6)
-//        {
-//            Console.WriteLine("Password is invalid.");
-//            return false;
-//        }
-//        if (Next != null)
-//        {
-//            return Next.Check(obj);
-//        }
-//        return true;
-//    }
-//}
+class PasswordChecker : BaseChecker // Bu class şifrəni yoxlayır.
+{
+    public override bool Check(object obj)
+    {
+        var user = obj as User;
+        if (string.IsNullOrEmpty(user.Password) || user.Password.Length < 6)
+        {
+            Console.WriteLine("Password is invalid.");
+            return false;
+        }
+        if (Next != null)
+        {
+            return Next.Check(obj);
+        }
+        return true;
+    }
+}
 
-//class EmailChecker : BaseChecker // Bu class email-i yoxlayır.
-//{
-//    public override bool Check(object obj)
-//    {
-//        var user = obj as User;
-//        if (string.IsNullOrEmpty(user.Email) || !user.Email.Contains("@"))
-//        {
-//            Console.WriteLine("Email is invalid.");
-//            return false;
-//        }
-//        if (Next != null)
-//        {
-//            return Next.Check(obj);
-//        }
-//        return true;
-//    }
-//}
+class EmailChecker : BaseChecker // Bu class email-i yoxlayır.
+{
+    public override bool Check(object obj)
+    {
+        var user = obj as User;
+        if (string.IsNullOrEmpty(user.Email) || !user.Email.Contains("@"))
+        {
+            Console.WriteLine("Email is invalid.");
+            return false;
+        }
+        if (Next != null)
+        {
+            return Next.Check(obj);
+        }
+        return true;
+    }
+}
 
 using ASP.Net_Rules.Concrete;
 
@@ -361,10 +360,36 @@ Console.WriteLine(director.MakeUserChecker(user));
 
 
 
+İndi gəlin bir mini ASP quraq ki, sadə bir HTTP server işləsin və müxtəlif səhifələr göstərsin.
+*/
+
+
+using System.Net;
+public delegate void HttpHandler(HttpListenerContext context);
+public interface IMiddleware
+{
+    IMiddleware? Next { get; set; }
+    void Handle(HttpListenerContext context);
+}
+
+public interface IStartup
+{
+    public void Configure(MiddlewareBuilder builder);
+}
+
+
+
+
+
 
 
 
 /*
+
+
+
+
+
 
 
 

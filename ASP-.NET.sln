@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ASP01.1", "ASP01.1\ASP01.1.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ASP.Net-Rules", "ASP.Net-Rules\ASP.Net-Rules.csproj", "{FBCC5D89-AA5F-4DDF-BFE7-F457906976AE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ASP NET 03 HW", "ASP NET 03 HW\ASP NET 03 HW.csproj", "{5DF9A4BB-4A80-4E98-86CA-08AD98D0EBFF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{FBCC5D89-AA5F-4DDF-BFE7-F457906976AE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FBCC5D89-AA5F-4DDF-BFE7-F457906976AE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FBCC5D89-AA5F-4DDF-BFE7-F457906976AE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5DF9A4BB-4A80-4E98-86CA-08AD98D0EBFF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5DF9A4BB-4A80-4E98-86CA-08AD98D0EBFF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5DF9A4BB-4A80-4E98-86CA-08AD98D0EBFF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5DF9A4BB-4A80-4E98-86CA-08AD98D0EBFF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
