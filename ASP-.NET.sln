@@ -13,6 +13,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ASP.Net-Rules", "ASP.Net-Ru
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ASP NET 03 HW", "ASP NET 03 HW\ASP NET 03 HW.csproj", "{5DF9A4BB-4A80-4E98-86CA-08AD98D0EBFF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ASP Net 04", "ASP Net 04\ASP Net 04.csproj", "{B6233CAD-4783-48F0-B0C4-C86CDF6DC4F7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ASP .Net 06 HW", "ASP .Net 06 HW\ASP .Net 06 HW.csproj", "{2F65D27D-4947-4B82-B903-102C63ACB31A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +43,14 @@ Global
 		{5DF9A4BB-4A80-4E98-86CA-08AD98D0EBFF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5DF9A4BB-4A80-4E98-86CA-08AD98D0EBFF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5DF9A4BB-4A80-4E98-86CA-08AD98D0EBFF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B6233CAD-4783-48F0-B0C4-C86CDF6DC4F7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B6233CAD-4783-48F0-B0C4-C86CDF6DC4F7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B6233CAD-4783-48F0-B0C4-C86CDF6DC4F7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B6233CAD-4783-48F0-B0C4-C86CDF6DC4F7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2F65D27D-4947-4B82-B903-102C63ACB31A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2F65D27D-4947-4B82-B903-102C63ACB31A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2F65D27D-4947-4B82-B903-102C63ACB31A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2F65D27D-4947-4B82-B903-102C63ACB31A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

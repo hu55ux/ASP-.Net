@@ -364,20 +364,6 @@ Console.WriteLine(director.MakeUserChecker(user));
 */
 
 
-using System.Net;
-public delegate void HttpHandler(HttpListenerContext context);
-public interface IMiddleware
-{
-    IMiddleware? Next { get; set; }
-    void Handle(HttpListenerContext context);
-}
-
-public interface IStartup
-{
-    public void Configure(MiddlewareBuilder builder);
-}
-
-
 
 
 
@@ -387,6 +373,13 @@ public interface IStartup
 /*
 
 
+
+
+
+                                                                                MVC
+
+MVC (Model-View-Controller) dizayn naxışı, proqram təminatının inkişafında geniş istifadə olunan bir nümunədir.
+Burada Model - məlumatları təmsil edir, View - istifadəçi interfeysini təmsil edir, Controller isə istifadəçi sorğularını idarə edir və uyğun cavabları qaytarır.
 
 
 

@@ -1,10 +1,10 @@
 ﻿using System.Net;
 
-namespace ASP.Net_Rules;
+namespace ASP.Net_Rules.Mini_ASP;
 
 public class LoggerMiddleware : IMiddleware
 {
-    public IMiddleware? Next { get; set; }
+    public HttpHandler Next { get; set; }
 
     public void Handle(HttpListenerContext context)
     {
@@ -12,8 +12,7 @@ public class LoggerMiddleware : IMiddleware
             {context.Request.HttpMethod}
             {context.Request.RawUrl}
             {context.Request.RemoteEndPoint}
-
             """);
-        Next.Handle(context);
+        Next.Invoke(context);
     }
 }

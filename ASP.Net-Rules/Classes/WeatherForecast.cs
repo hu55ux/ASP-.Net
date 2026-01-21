@@ -1,4 +1,4 @@
-namespace ASP.Net_Rules
+namespace ASP.Net_Rules.Classes
 {
     public class WeatherForecast
     {
