@@ -392,8 +392,12 @@ Burada Model - məlumatları təmsil edir, View - istifadəçi interfeysini təm
 
 
 
+                                                                                    Web API Introduction
 
-
+ASP Web API - ASP.NET Core Web API — datanı bazadan götürüb, onu standart bir formata (JSON) salan və internet vasitəsilə digər proqramlara təqdim edən bir "ötürücü" texnologiyadır.
+Yəni sadə dildə desək bu bütün öroqramların və işlətim sistemlərinin (MacOS,Linux,Windows) bir-birilə qarşılıqlı əlaqəsini təmin edir. JSON formatını dəstəkləyir. Kross-Platformdur yəni bizim yazdığımız kod 
+(MacOS,Linux,Windows) serverlərinin hər birində işləyir. Olduqca yüksək sürətlidir. JWT (JSON Web Tokens) və OAuth kimi güclü təhlükəsizlik standartlarını asanlıqla tətbiq etmək olur.
+Code Example in : ASP .Net 07 HW;
 
 
 
