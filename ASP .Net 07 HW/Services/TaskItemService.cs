@@ -13,7 +13,7 @@ public class TaskItemService : ITaskItemService
     public async Task<TaskItem> CreateAsync(TaskItem taskItem)
     {
         taskItem.CreatedAt = DateTime.UtcNow;
-        taskItem.UpdatedAt = null; // null! yerinə modeldə DateTime? istifadə edin
+        taskItem.UpdatedAt = null;
 
         _dbContext.TaskItems.Add(taskItem);
         await _dbContext.SaveChangesAsync();
@@ -32,7 +32,7 @@ public class TaskItemService : ITaskItemService
 
     public async Task<IEnumerable<TaskItem>> GetAllAsync()
     {
-        return await _dbContext.TaskItems.ToListAsync();
+        return await _dbContext.TaskItems.Include(t=>t.Project).ToListAsync();
     }
 
     public async Task<TaskItem?> GetByIdAsync(int id)
@@ -43,6 +43,7 @@ public class TaskItemService : ITaskItemService
     public async Task<IEnumerable<TaskItem>> GetByProjectIdAsync(int projectId)
     {
         return await _dbContext.TaskItems
+            .Include(t=>t.Project)
             .Where(x => x.ProjectId == projectId)
             .ToListAsync();
     }
