@@ -397,8 +397,22 @@ Burada Model - məlumatları təmsil edir, View - istifadəçi interfeysini təm
 ASP Web API - ASP.NET Core Web API — datanı bazadan götürüb, onu standart bir formata (JSON) salan və internet vasitəsilə digər proqramlara təqdim edən bir "ötürücü" texnologiyadır.
 Yəni sadə dildə desək bu bütün öroqramların və işlətim sistemlərinin (MacOS,Linux,Windows) bir-birilə qarşılıqlı əlaqəsini təmin edir. JSON formatını dəstəkləyir. Kross-Platformdur yəni bizim yazdığımız kod 
 (MacOS,Linux,Windows) serverlərinin hər birində işləyir. Olduqca yüksək sürətlidir. JWT (JSON Web Tokens) və OAuth kimi güclü təhlükəsizlik standartlarını asanlıqla tətbiq etmək olur.
-Code Example in : ASP .Net 07 HW;
 
+
+
+
+
+
+
+
+
+
+                                                                                    DTO
+DTO (Data Transfer Object) nümunəsi, proqram təminatında məlumatların bir hissədən digərinə ötürülməsi üçün istifadə olunan sadə obyektlərdir.
+DTO bizə giriş və çıxış zamanı maximum dərəcədə lazımlı məlumatların istifadə olunmasına imkan verir.
+Məsələn bizim bir istifadəçi məlumatlarımız var və bu dataların daxilində başqa digər fərqli objectlərdə saxlanılır ki, bu zaman biz sadəcə istifadəçini yaradan zaman,göndərən zaman və ya qaytaran zaman bizə əlavə məlumatlar lazım deyil.
+Bu zaman isə bizə problemli dataları ötürmək üçün DTO-lar kömək edir. DTO-lar sadəcə lazım olan məlumatları saxlayır və digər əlavə məlumatları saxlamır.
+Yəni DTO transfer üçün lazım olan dataları saxlayır və digər əlavə məlumatları saxlamır. Bu da bizim proqramımızın performansını artırır və təhlükəsizliyini təmin edir.
 
 
 

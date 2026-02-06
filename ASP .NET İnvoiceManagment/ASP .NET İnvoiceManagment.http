@@ -1,0 +1,6 @@
+@ASP_.NET_InvoiceManagment_HostAddress = http://localhost:5200
+
+GET {{ASP_.NET_InvoiceManagment_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
