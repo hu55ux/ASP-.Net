@@ -43,7 +43,7 @@ public class Customer
     /// <summary>
     /// Last update timestamp.
     /// </summary>
-    public DateTimeOffset? UpdatedAt { get; set; } // 'UpdaatedAt' olan typo düzəldildi
+    public DateTimeOffset? UpdatedAt { get; set; }
 
     /// <summary>
     /// Soft delete timestamp. If not null, the customer is considered archived.

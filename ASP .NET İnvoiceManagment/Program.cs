@@ -19,6 +19,7 @@ builder.Services.AddDbContext<InvoiceManagmentDbContext>(
 );
 builder.Services.AddScoped<I_InvoiceService, InvoiceService>();
 builder.Services.AddScoped<ICustomerService, CustomerService>();
+builder.Services.AddAutoMapper(typeof(Program));
 
 var app = builder.Build();
 

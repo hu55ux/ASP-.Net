@@ -1,6 +1,4 @@
-﻿using ASP_.NET_InvoiceManagment.Models;
-
-namespace ASP_.NET_InvoiceManagment.DTOs.InvoiceDTOs;
+﻿namespace ASP_.NET_InvoiceManagment.DTOs.InvoiceDTOs;
 
 /// <summary>
 /// Data transfer object representing the summarized details of an invoice in responses.
@@ -35,11 +33,11 @@ public class InvoiceResponseDTO
     /// The current lifecycle status of the invoice.
     /// </summary>
     /// <example>Created</example>
-    public string Status { get; set; }= string.Empty;
+    public string Status { get; set; } = string.Empty;
 
     /// <summary>
     /// The number of line items (rows) included in this invoice.
     /// </summary>
     /// <example>3</example>
-    public int InvoiceCount { get; set; }
+    public int InvoiceRowsCount { get; set; }
 }

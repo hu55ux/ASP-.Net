@@ -2,6 +2,7 @@
 using ASP_.NET_InvoiceManagment.DTOs.InvoiceDTOs;
 using ASP_.NET_InvoiceManagment.Models;
 using ASP_.NET_InvoiceManagment.Services.Interfaces;
+using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 
 namespace ASP_.NET_InvoiceManagment.Services;
@@ -12,10 +13,12 @@ namespace ASP_.NET_InvoiceManagment.Services;
 public class InvoiceService : I_InvoiceService
 {
     private readonly InvoiceManagmentDbContext _context;
+    private readonly IMapper _mapper;
 
-    public InvoiceService(InvoiceManagmentDbContext context)
+    public InvoiceService(InvoiceManagmentDbContext context, IMapper mapper)
     {
         _context = context;
+        _mapper = mapper;
     }
 
     /// <summary>
@@ -59,7 +62,7 @@ public class InvoiceService : I_InvoiceService
         invoice.UpdatedAt = DateTimeOffset.UtcNow;
         await _context.SaveChangesAsync();
 
-        return MapToInvoiceDTO(invoice);
+        return _mapper.Map<InvoiceResponseDTO>(invoice);
     }
 
     /// <summary>
@@ -67,16 +70,7 @@ public class InvoiceService : I_InvoiceService
     /// </summary>
     public async Task<InvoiceResponseDTO> CreateAsync(CreateInvoiceRequest createInvoice)
     {
-        var invoice = new Invoice
-        {
-            CustomerId = createInvoice.CustomerId,
-            StartDate = createInvoice.StartDate,
-            EndDate = createInvoice.EndDate,
-            Comment = createInvoice.Comment,
-            Status = createInvoice.Status,
-            CreatedAt = DateTimeOffset.UtcNow,
-            TotalSum = 0 // Initially 0, will be updated if rows exist
-        };
+        var invoice = _mapper.Map<Invoice>(createInvoice);
 
         invoice.TotalSum = invoice.Rows?.Sum(r => r.Sum) ?? 0;
 
@@ -87,7 +81,8 @@ public class InvoiceService : I_InvoiceService
         await _context.Entry(invoice).Reference(i => i.Customer).LoadAsync();
         await _context.Entry(invoice).Collection(i => i.Rows).LoadAsync();
 
-        return MapToInvoiceDTO(invoice);
+
+        return _mapper.Map<InvoiceResponseDTO>(invoice);
     }
 
     /// <summary>
@@ -116,7 +111,7 @@ public class InvoiceService : I_InvoiceService
             .Where(i => i.DeletedAt == null)
             .ToListAsync();
 
-        return invoices.Select(MapToInvoiceDTO);
+        return _mapper.Map<IEnumerable<InvoiceResponseDTO>>(invoices);
     }
 
     /// <summary>
@@ -135,7 +130,7 @@ public class InvoiceService : I_InvoiceService
 
         var invoice = await query.FirstOrDefaultAsync(i => i.Id == id);
 
-        return invoice is null ? null : MapToInvoiceDTO(invoice);
+        return invoice is null ? null : _mapper.Map<InvoiceResponseDTO>(invoice);
     }
 
     /// <summary>
@@ -153,31 +148,12 @@ public class InvoiceService : I_InvoiceService
         if (IsSent(existingInvoice))
             throw new InvalidOperationException("Changes cannot be made to a sent invoice.");
 
-        existingInvoice.StartDate = updateInvoice.StartDate;
-        existingInvoice.EndDate = updateInvoice.EndDate;
-        existingInvoice.Comment = updateInvoice.Comment;
-        existingInvoice.UpdatedAt = DateTimeOffset.UtcNow;
+        _mapper.Map(updateInvoice, existingInvoice);
 
         // Recalculate total in case rows were modified
         existingInvoice.TotalSum = existingInvoice.Rows?.Sum(r => r.Sum) ?? 0;
 
         await _context.SaveChangesAsync();
-        return MapToInvoiceDTO(existingInvoice);
-    }
-
-    /// <summary>
-    /// Maps Invoice entity to InvoiceResponseDTO.
-    /// </summary>
-    private InvoiceResponseDTO MapToInvoiceDTO(Invoice invoice)
-    {
-        return new InvoiceResponseDTO
-        {
-            // Assuming Id and other fields exist in your DTO
-            StartDate = invoice.StartDate,
-            EndDate = invoice.EndDate,
-            TotalSum = invoice.TotalSum,
-            Status = invoice.Status.ToString(),
-            InvoiceCount = invoice.Rows?.Count ?? 0
-        };
+        return _mapper.Map<InvoiceResponseDTO>(existingInvoice);
     }
 }

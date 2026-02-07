@@ -2,6 +2,7 @@
 using ASP_.NET_InvoiceManagment.DTOs.CustomerDTOs;
 using ASP_.NET_InvoiceManagment.Models;
 using ASP_.NET_InvoiceManagment.Services.Interfaces;
+using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 
 namespace ASP_.NET_InvoiceManagment.Services;
@@ -12,10 +13,12 @@ namespace ASP_.NET_InvoiceManagment.Services;
 public class CustomerService : ICustomerService
 {
     private readonly InvoiceManagmentDbContext _dbContext;
+    private readonly IMapper _mapper;
 
-    public CustomerService(InvoiceManagmentDbContext dbContext)
+    public CustomerService(InvoiceManagmentDbContext dbContext, IMapper mapper)
     {
         _dbContext = dbContext;
+        _mapper = mapper;
     }
 
     /// <summary>
@@ -51,20 +54,12 @@ public class CustomerService : ICustomerService
         if (exists)
             throw new InvalidOperationException($"Customer with Email: {createCustomer.Email} already exists!!");
 
-        var customer = new Customer
-        {
-            Name = createCustomer.Name,
-            Email = createCustomer.Email,
-            Address = createCustomer.Address,
-            PhoneNumber = createCustomer.PhoneNumber,
-            CreatedAt = DateTime.UtcNow,
-            UpdatedAt = DateTime.UtcNow
-        };
+        var customer = _mapper.Map<Customer>(createCustomer);
 
         _dbContext.Customers.Add(customer);
         await _dbContext.SaveChangesAsync();
 
-        return MapToCustomerDTO(customer);
+        return _mapper.Map<CustomerResponseDTO>(customer);
     }
 
     /// <summary>
@@ -82,15 +77,11 @@ public class CustomerService : ICustomerService
         if (updatingCustomer is null)
             throw new KeyNotFoundException($"Customer with ID: {id} not found!!");
 
-        updatingCustomer.Name = updateCustomer.Name;
-        updatingCustomer.Email = updateCustomer.Email;
-        updatingCustomer.Address = updateCustomer.Address;
-        updatingCustomer.PhoneNumber = updateCustomer.PhoneNumber;
-        updatingCustomer.UpdatedAt = DateTime.UtcNow;
+        _mapper.Map(updateCustomer, updatingCustomer);
 
         await _dbContext.SaveChangesAsync();
 
-        return MapToCustomerDTO(updatingCustomer);
+        return _mapper.Map<CustomerResponseDTO>(updatingCustomer);
     }
 
     /// <summary>
@@ -121,7 +112,7 @@ public class CustomerService : ICustomerService
             .Where(c => c.DeletedAt == null)
             .ToListAsync();
 
-        return customers.Select(MapToCustomerDTO);
+        return _mapper.Map<IEnumerable<CustomerResponseDTO>>(customers);
     }
 
     /// <summary>
@@ -138,23 +129,7 @@ public class CustomerService : ICustomerService
 
         var customer = await query.Include(c => c.Invoices).FirstOrDefaultAsync(c => c.Id == id);
 
-        return customer == null ? null : MapToCustomerDTO(customer);
-    }
-
-    /// <summary>
-    /// Internal helper to map Customer entity to Response DTO.
-    /// </summary>
-    private CustomerResponseDTO MapToCustomerDTO(Customer customer)
-    {
-        return new CustomerResponseDTO
-        {
-            Name = customer.Name,
-            Email = customer.Email,
-            Address = customer.Address,
-            PhoneNumber = customer.PhoneNumber,
-            InvoiceCount = customer.Invoices?.Count ?? 0,
-            HasInvoices = customer.Invoices?.Any() ?? false
-        };
+        return customer == null ? null : _mapper.Map<CustomerResponseDTO>(customer);
     }
 
     /// <summary>
