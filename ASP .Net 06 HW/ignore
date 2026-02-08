@@ -1,0 +1,17 @@
+# Visual Studio generated files
+*.user
+*.suo
+*.vs/
+
+# Build directories
+bin/
+obj/
+
+# Environment files
+appsettings.Development.json
+
+# Ignore any temp or log files
+*.log
+
+# Optional ignore
+ignore

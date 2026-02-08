@@ -1,0 +1,86 @@
+﻿@model MyUser
+
+@{
+    ViewData["Title"] = "Contact Me";
+}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="card shadow-lg border-0 rounded-4 overflow-hidden">
+                <div class="row g-0">
+                    <div class="col-md-5 bg-primary text-white p-5">
+                        <h2 class="fw-bold mb-4">Get in Touch</h2>
+                        <p class="mb-5 opacity-75">I'm open for new opportunities and collaborations. Feel free to send me a message!</p>
+
+                        <div class="d-flex mb-4">
+                            <i class="bi bi-envelope-fill fs-4 me-3"></i>
+                            <div>
+                                <h6 class="mb-0">Email</h6>
+                                <p>@Model.Email</p>
+                            </div>
+                        </div>
+
+                        <div class="d-flex mb-4">
+                            <i class="bi bi-geo-alt-fill fs-4 me-3"></i>
+                            <div>
+                                <h6 class="mb-0">Location</h6>
+                                <p>Sumqayit, Azerbaijan</p>
+                            </div>
+                        </div>
+
+                        <div class="mt-5">
+                            <h6 class="text-uppercase small fw-bold mb-3">Follow Me</h6>
+                            <div class="d-flex gap-3">
+                                @foreach (var link in Model.ProjectLinks.Take(1))
+                                {
+                                    <a href="@link" class="text-white fs-3"><i class="bi bi-github"></i></a>
+                                }
+                                <a href="#" class="text-white fs-3"><i class="bi bi-linkedin"></i></a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-7 p-5 bg-white">
+                        @if (TempData["Success"] != null)
+                        {
+                            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                <i class="bi bi-check-circle-fill me-2"></i> @TempData["Success"]
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        }
+
+                        <form asp-controller="User" asp-action="Contact" method="post">
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Your Email Address</label>
+                                <input type="email" name="visitorEmail" class="form-control form-control-lg border-2" placeholder="name@example.com" required>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Subject</label>
+                                <input type="text" name="subject" class="form-control form-control-lg border-2" placeholder="Project Inquiry" required>
+                            </div>
+
+                            <div class="mb-4">
+                                <label class="form-label fw-bold">Message</label>
+                                <textarea name="message" class="form-control form-control-lg border-2" rows="4" placeholder="Hi Huseyn, I'd like to talk about..." required></textarea>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary btn-lg w-100 rounded-pill shadow-sm">
+                                Send Message <i class="bi bi-send-fill ms-2"></i>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .form-control:focus {
+        border-color: #0d6efd;
+        box-shadow: none;
+    }
+    .card { transition: all 0.3s ease; }
+</style>

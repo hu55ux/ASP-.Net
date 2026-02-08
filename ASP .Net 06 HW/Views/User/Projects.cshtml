@@ -1,0 +1,60 @@
+﻿@model MyUser
+
+@{
+    ViewData["Title"] = "My Projects";
+}
+
+<div class="container py-5">
+    <div class="text-center mb-5">
+        <h1 class="display-4 fw-bold text-dark">Portfolio Projects</h1>
+        <p class="lead text-muted">A showcase of my recent work and open-source contributions.</p>
+        <hr class="w-25 mx-auto text-primary" style="height: 3px;">
+    </div>
+
+    <div class="row g-4">
+        @foreach (var link in Model.ProjectLinks)
+        {
+            var projectName = link.Split('/').Last().Replace(".git", "");
+
+            <div class="col-md-6 col-lg-4">
+                <div class="card h-100 shadow border-0 project-card">
+                    <div class="card-body p-4">
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="bg-primary text-white rounded p-2 me-3">
+                                <i class="bi bi-github fs-3"></i>
+                            </div>
+                            <h5 class="card-title mb-0 fw-bold">@projectName</h5>
+                        </div>
+                        
+                        <p class="card-text text-muted">
+                            A professional project developed using modern technologies found in my skills set. 
+                            Source code is available on GitHub.
+                        </p>
+                    </div>
+                    <div class="card-footer bg-transparent border-0 p-4 pt-0">
+                        <a href="@link" target="_blank" class="btn btn-outline-primary w-100 rounded-pill fw-bold">
+                            View on GitHub <i class="bi bi-box-arrow-up-right ms-2"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    @if (!Model.ProjectLinks.Any())
+    {
+        <div class="alert alert-info text-center">
+            No projects found. Check back later!
+        </div>
+    }
+</div>
+
+<style>
+    .project-card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .project-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 1rem 3rem rgba(0,0,0,.175)!important;
+    }
+</style>

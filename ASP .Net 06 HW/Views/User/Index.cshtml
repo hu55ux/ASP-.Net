@@ -1,0 +1,24 @@
+﻿@model MyUser
+
+<div class="container py-5">
+    <div class="card shadow border-0 overflow-hidden">
+        <div class="row g-0">
+            <div class="col-md-4 bg-primary text-white text-center p-5">
+                <img src="@Model.PhotoUrl" class="rounded-circle img-thumbnail mb-3" style="width: 180px; height: 180px; object-fit: cover;">
+                <h2>@Model.FirstName @Model.LastName</h2>
+                <p class="badge bg-light text-primary">@Model.AboutMe</p>
+            </div>
+            <div class="col-md-8 p-5">
+                <h3 class="mb-4">Welcome to my Portfolio</h3>
+                <p class="lead text-muted">
+                    Hello! I am @Model.FirstName, a dedicated developer with passion for building high-quality web applications. 
+                    I specialize in @string.Join(", ", Model.Skills.Take(3)) and many more.
+                </p>
+                <div class="mt-5">
+                    <a asp-action="Skills" class="btn btn-primary px-4 me-2">My Technical Skills</a>
+                    <a asp-action="Contact" class="btn btn-outline-primary px-4">Get in Touch</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

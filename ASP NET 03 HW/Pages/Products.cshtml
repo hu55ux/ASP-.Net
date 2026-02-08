@@ -1,0 +1,196 @@
+﻿@page
+@model ProductsModel
+
+<div class="product-container">
+    <div class="page-header">
+        <h1>Our Product Collection</h1>
+        <p>Discover our high-quality products at the best prices</p>
+    </div>
+
+    @if (Model.Products != null && Model.Products.Any())
+    {
+        <div class="product-grid">
+            @foreach (var product in Model.Products)
+            {
+                <div class="product-card">
+                    <div class="card-top">
+                        <span class="price-tag">$@product.Price.ToString("F2")</span>
+                        <span class="status-dot @(product.IsAvailable ? "available" : "unavailable")" 
+                              title="@(product.IsAvailable ? "In Stock" : "Out of Stock")">
+                        </span>
+                    </div>
+
+                    <div class="card-body">
+                        <h3>@product.Name</h3>
+                        
+                        <p class="description">
+                            @(product.Description.Length > 80 
+                                ? product.Description.Substring(0, 80) + "..." 
+                                : product.Description)
+                        </p>
+
+                        <div class="product-meta">
+                            <div class="meta-item">
+                                <small>Stock</small>
+                                <span>@product.Count pcs</span>
+                            </div>
+                            <div class="meta-item text-end">
+                                <small>ID</small>
+                                <span>#@product.Id</span>
+                            </div>
+                        </div>
+                        
+                        <a asp-page="/Details" asp-route-id="@product.Id" class="details-btn">
+                            View Details
+                        </a>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="no-data">
+            <div class="icon">📦</div>
+            <p>No products found in the catalog.</p>
+            <a href="/" class="btn-refresh">Refresh Page</a>
+        </div>
+    }
+</div>
+
+<style>
+    .product-container {
+        max-width: 1200px;
+        margin: 40px auto;
+        padding: 0 20px;
+        font-family: 'Inter', 'Segoe UI', sans-serif;
+    }
+
+    .page-header {
+        text-align: center;
+        margin-bottom: 50px;
+    }
+
+    .page-header h1 {
+        font-weight: 800;
+        color: #1a1a1a;
+        margin-bottom: 10px;
+    }
+
+    .page-header p {
+        color: #666;
+        font-size: 1.1rem;
+    }
+
+    .product-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 30px;
+    }
+
+    .product-card {
+        background: #ffffff;
+        border-radius: 20px;
+        border: 1px solid #f0f0f0;
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        display: flex;
+        flex-direction: column;
+        position: relative;
+        overflow: hidden;
+        padding: 25px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.02);
+    }
+
+    .product-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+        border-color: #007bff33;
+    }
+
+    .card-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+    .price-tag {
+        background: #e1f0ff;
+        color: #007bff;
+        padding: 6px 14px;
+        border-radius: 12px;
+        font-weight: 700;
+        font-size: 1.1rem;
+    }
+
+    .status-dot {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        display: inline-block;
+    }
+    .status-dot.available { background-color: #00b894; box-shadow: 0 0 8px #00b89488; }
+    .status-dot.unavailable { background-color: #d63031; box-shadow: 0 0 8px #d6303188; }
+
+    .product-card h3 {
+        font-size: 1.3rem;
+        font-weight: 700;
+        color: #2d3436;
+        margin-bottom: 12px;
+    }
+
+    .description {
+        color: #636e72;
+        font-size: 0.95rem;
+        line-height: 1.5;
+        height: 4.5em;
+        overflow: hidden;
+        margin-bottom: 20px;
+    }
+
+    .product-meta {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        border-top: 1px solid #f8f9fa;
+        padding-top: 15px;
+        margin-bottom: 20px;
+    }
+
+    .meta-item small {
+        display: block;
+        color: #b2bec3;
+        text-transform: uppercase;
+        font-size: 0.7rem;
+        letter-spacing: 0.5px;
+    }
+
+    .meta-item span {
+        font-weight: 600;
+        color: #2d3436;
+        font-size: 0.9rem;
+    }
+
+    .details-btn {
+        background: #1a1a1a;
+        color: #fff !important;
+        text-align: center;
+        padding: 12px;
+        border-radius: 12px;
+        text-decoration: none;
+        font-weight: 600;
+        transition: background 0.3s ease;
+    }
+
+    .details-btn:hover {
+        background: #007bff;
+    }
+
+    .no-data {
+        text-align: center;
+        padding: 100px 20px;
+        background: #f8f9fa;
+        border-radius: 30px;
+    }
+
+    .no-data .icon { font-size: 4rem; margin-bottom: 20px; }
+</style>

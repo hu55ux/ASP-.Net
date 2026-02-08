@@ -1,0 +1,83 @@
+﻿@model MyUser
+
+@{
+    ViewData["Title"] = "About Me";
+}
+
+<div class="container py-5">
+    <div class="row min-vh-50 align-items-center g-5">
+        <div class="col-lg-5 text-center">
+            <div class="position-relative d-inline-block">
+                <img src="@Model.PhotoUrl" alt="@Model.FirstName" 
+                     class="img-fluid rounded-4 shadow-lg mb-4 border border-5 border-white" 
+                     style="max-width: 350px; filter: grayscale(20%);">
+                <div class="position-absolute bottom-0 start-50 translate-middle-x bg-primary text-white px-4 py-2 rounded-pill shadow">
+                    <strong>@Model.FirstName @Model.LastName</strong>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-7">
+            <h6 class="text-primary fw-bold text-uppercase ls-1">Who am I?</h6>
+            <h2 class="display-5 fw-bold mb-4">I'm a @Model.AboutMe</h2>
+            
+            <p class="lead text-muted mb-4">
+                I am a developer based in Azerbaijan with a deep passion for building robust and scalable applications. 
+                My journey in tech is driven by curiosity and a commitment to solving real-world problems through clean, 
+                efficient code.
+            </p>
+
+            <div class="row g-3 mb-5">
+                <div class="col-sm-6">
+                    <div class="d-flex align-items-center">
+                        <i class="bi bi-envelope-at text-primary fs-3 me-3"></i>
+                        <div>
+                            <small class="text-muted d-block">Official Email</small>
+                            <span class="fw-bold">@Model.Email</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="d-flex align-items-center">
+                        <i class="bi bi-geo-alt text-primary fs-3 me-3"></i>
+                        <div>
+                            <small class="text-muted d-block">Location</small>
+                            <span class="fw-bold">Sumqayit, Azerbaijan</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="d-flex gap-3">
+                <a asp-action="Contact" class="btn btn-primary btn-lg px-4 rounded-pill">Hire Me</a>
+                <a href="@Model.ProjectLinks.FirstOrDefault()" target="_blank" class="btn btn-outline-dark btn-lg px-4 rounded-pill">
+                    <i class="bi bi-github me-2"></i>GitHub
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-5">
+        <div class="col-12">
+            <div class="p-5 bg-dark text-white rounded-4 shadow">
+                <div class="row align-items-center">
+                    <div class="col-md-8">
+                        <h3 class="fw-bold mb-3 text-warning">More than just code...</h3>
+                        <p class="mb-0 opacity-75">
+                            As a proud <strong>Madridista</strong>, I value team spirit, excellence, and the "never give up" attitude. 
+                            Whether I'm debugging a complex SQL query or watching a match, I strive for the win.
+                        </p>
+                    </div>
+                    <div class="col-md-4 text-end d-none d-md-block">
+                        <i class="bi bi-trophy display-1 text-warning opacity-50"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .ls-1 { letter-spacing: 2px; }
+    .rounded-4 { border-radius: 1.5rem !important; }
+</style>
