@@ -1,4 +1,5 @@
-﻿using ASP_.NET_InvoiceManagment.DTOs.InvoiceDTOs;
+﻿using ASP_.NET_InvoiceManagment.Common;
+using ASP_.NET_InvoiceManagment.DTOs.InvoiceDTOs;
 using ASP_.NET_InvoiceManagment.Models;
 
 namespace ASP_.NET_InvoiceManagment.Services.Interfaces;
@@ -44,6 +45,13 @@ public interface I_InvoiceService
     /// </summary>
     /// <returns>A collection of <see cref="InvoiceResponseDTO"/>.</returns>
     Task<IEnumerable<InvoiceResponseDTO>> GetAllAsync();
+    /// <summary>
+    /// Gets a paginated list of invoices based on the provided query parameters, 
+    /// including filtering, sorting, and searching capabilities.
+    /// </summary>
+    /// <param name="ınvoiceQuery"></param>
+    /// <returns></returns>
+    Task<PagedResult<InvoiceResponseDTO?>> GetPagedAsync(InvoiceQueryDTO ınvoiceQuery);
 
     /// <summary>
     /// Updates the lifecycle status of an invoice (e.g., from Created to Sent).

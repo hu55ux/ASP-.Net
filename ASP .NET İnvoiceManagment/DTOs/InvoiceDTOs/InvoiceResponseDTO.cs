@@ -10,6 +10,16 @@ public class InvoiceResponseDTO
     /// </summary>
     /// <example>1</example>
     public Guid Id { get; set; }
+    /// <summary>
+    /// Key identifying the customer associated with this invoice.
+    /// Should be a human-readable name or identifier.
+    /// </summary>
+    public string CustomerName { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Comment or note associated with the invoice, providing additional context or information.
+    /// </summary>
+    public string Comment { get; set; } = string.Empty;
 
     /// <summary>
     /// The start date of the period covered by the invoice.

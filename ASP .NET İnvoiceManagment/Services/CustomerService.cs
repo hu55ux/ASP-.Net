@@ -1,4 +1,5 @@
-﻿using ASP_.NET_InvoiceManagment.Database;
+﻿using ASP_.NET_InvoiceManagment.Common;
+using ASP_.NET_InvoiceManagment.Database;
 using ASP_.NET_InvoiceManagment.DTOs.CustomerDTOs;
 using ASP_.NET_InvoiceManagment.Models;
 using ASP_.NET_InvoiceManagment.Services.Interfaces;
@@ -15,6 +16,11 @@ public class CustomerService : ICustomerService
     private readonly InvoiceManagmentDbContext _dbContext;
     private readonly IMapper _mapper;
 
+    /// <summary>
+    /// Constructor for CustomerService, injecting the database context and AutoMapper instance.
+    /// </summary>
+    /// <param name="dbContext"></param>
+    /// <param name="mapper"></param>
     public CustomerService(InvoiceManagmentDbContext dbContext, IMapper mapper)
     {
         _dbContext = dbContext;
@@ -141,5 +147,66 @@ public class CustomerService : ICustomerService
     {
         if (customer == null) return false;
         return customer.Invoices != null && customer.Invoices.Any();
+    }
+
+    /// <summary>
+    /// Performs a paginated search for customers based on the provided query parameters.
+    /// </summary>
+    /// <param name="customerQuery"></param>
+    /// <returns></returns>
+    public async Task<PagedResult<CustomerResponseDTO>> GetPagedAsync(CustomerQueryDTO customerQuery)
+    {
+        customerQuery.Validate();
+        var query = _dbContext.Customers
+            .AsNoTracking()
+            .Include(c => c.Invoices)
+            .Where(c => c.DeletedAt == null)
+            .AsQueryable();
+
+        if (!string.IsNullOrWhiteSpace(customerQuery.SearchTerm))
+        {
+            var searchTerm = customerQuery.SearchTerm.Trim().ToLower();
+
+            query = query.Where(
+                q => q.Name.ToLower().Contains(searchTerm) ||
+                q.Address.ToLower().Contains(searchTerm) ||
+                q.Email.ToLower().Contains(searchTerm));
+        }
+
+        if (!string.IsNullOrWhiteSpace(customerQuery.Sort))
+        {
+            query = ApplySorting(query, customerQuery.Sort, customerQuery.SortDirection);
+        }
+        else
+        {
+            query = query.OrderByDescending(c => c.Name);
+        }
+        var totalCount = await _dbContext.Customers.CountAsync();
+        var skip = (customerQuery.Page - 1) * customerQuery.PageSize;
+        var customers = await query
+                                    .Skip(skip)
+                                    .Take(customerQuery.PageSize)
+                                    .ToListAsync();
+
+        var customerDTO = _mapper.Map<IEnumerable<CustomerResponseDTO>>(customers);
+
+        return PagedResult<CustomerResponseDTO>.Create(
+            customerDTO,
+            customerQuery.Page,
+            customerQuery.PageSize,
+            totalCount
+            );
+    }
+
+    private IQueryable<Customer> ApplySorting(IQueryable<Customer> query, string sort, string sortDirection)
+    {
+        var isDescending = sortDirection?.ToLower() == "desc";
+        return sort.ToLower() switch
+        {
+            "name" => isDescending ? query.OrderByDescending(c => c.Name) : query.OrderBy(c => c.Name),
+            "email" => isDescending ? query.OrderByDescending(c => c.Email) : query.OrderBy(c => c.Email),
+            "createdat" => isDescending ? query.OrderByDescending(c => c.CreatedAt) : query.OrderBy(c => c.CreatedAt),
+            _ => query.OrderByDescending(c => c.Name)
+        };
     }
 }

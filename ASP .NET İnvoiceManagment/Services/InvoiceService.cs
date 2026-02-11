@@ -1,10 +1,10 @@
-﻿using ASP_.NET_InvoiceManagment.Database;
+﻿using ASP_.NET_InvoiceManagment.Common;
+using ASP_.NET_InvoiceManagment.Database;
 using ASP_.NET_InvoiceManagment.DTOs.InvoiceDTOs;
 using ASP_.NET_InvoiceManagment.Models;
 using ASP_.NET_InvoiceManagment.Services.Interfaces;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
-
 namespace ASP_.NET_InvoiceManagment.Services;
 
 /// <summary>
@@ -15,6 +15,11 @@ public class InvoiceService : I_InvoiceService
     private readonly InvoiceManagmentDbContext _context;
     private readonly IMapper _mapper;
 
+    /// <summary>
+    /// Constructor for InvoiceService, injecting the database context and AutoMapper instance.ll
+    /// </summary>
+    /// <param name="context"></param>
+    /// <param name="mapper"></param>
     public InvoiceService(InvoiceManagmentDbContext context, IMapper mapper)
     {
         _context = context;
@@ -155,5 +160,71 @@ public class InvoiceService : I_InvoiceService
 
         await _context.SaveChangesAsync();
         return _mapper.Map<InvoiceResponseDTO>(existingInvoice);
+    }
+    /// <summary>
+    /// Gets a paginated list of invoices based on the provided query parameters, 
+    /// including filtering, sorting, and searching capabilities.
+    /// </summary>
+    /// <param name="invoiceQuery"></param>
+    /// <returns></returns>
+    public async Task<PagedResult<InvoiceResponseDTO?>> GetPagedAsync(InvoiceQueryDTO invoiceQuery)
+    {
+        invoiceQuery.Validate();
+        var query = _context.Invoices
+            .AsNoTracking()
+            .Include(i => i.Customer)
+            .Include(i => i.Rows)
+            .Where(i => i.DeletedAt == null);
+
+        if (!string.IsNullOrWhiteSpace(invoiceQuery.SearchTerm))
+        {
+            query = query.Where(i =>
+            i.Comment.Contains(invoiceQuery.SearchTerm));
+        }
+
+        if (!string.IsNullOrWhiteSpace(invoiceQuery.Status))
+        {
+            if (Enum.TryParse<InvoiceStatus>(invoiceQuery.Status, true, out var status))
+            {
+                query = query.Where(t => t.Status == status);
+            }
+        }
+
+
+        if (!string.IsNullOrWhiteSpace(invoiceQuery.Sort))
+        {
+            query = ApplyFiltering(query, invoiceQuery.Sort, invoiceQuery.SortDirection);
+        }
+        else
+        {
+            query = query.OrderBy(i => i.CreatedAt);
+        }
+
+        var totalCount = await _context.Invoices.CountAsync(i => i.DeletedAt == null);
+        var skip = (invoiceQuery.Page - 1) * invoiceQuery.PageSize;
+        var invoices = await query
+            .Skip(skip)
+            .Take(invoiceQuery.PageSize)
+            .ToListAsync();
+
+        var invoiceDTOs = _mapper.Map<IEnumerable<InvoiceResponseDTO?>>(invoices);
+
+        return PagedResult<InvoiceResponseDTO?>.Create(
+                                                invoiceDTOs,
+                                                invoiceQuery.Page,
+                                                invoiceQuery.PageSize,
+                                                totalCount);
+    }
+
+    private IQueryable<Invoice> ApplyFiltering(IQueryable<Invoice> query, string sort, string sortDirection)
+    {
+        var isDescending = sortDirection?.ToLower() == "desc";
+        return sort.ToLower() switch
+        {
+            "createdat" => isDescending ? query.OrderByDescending(i => i.CreatedAt) : query.OrderBy(i => i.CreatedAt),
+            "totalsum" => isDescending ? query.OrderByDescending(i => i.TotalSum) : query.OrderBy(i => i.TotalSum),
+            "status" => isDescending ? query.OrderByDescending(i => i.Status) : query.OrderBy(i => i.Status),
+            _ => query.OrderBy(i => i.CreatedAt),
+        };
     }
 }

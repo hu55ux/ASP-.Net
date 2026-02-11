@@ -1,7 +1,9 @@
-﻿using ASP_.NET_InvoiceManagment.Common;
+﻿using System.Threading.Tasks;
+using ASP_.NET_InvoiceManagment.Common;
 using ASP_.NET_InvoiceManagment.DTOs.CustomerDTOs;
 using ASP_.NET_InvoiceManagment.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace ASP_.NET_InvoiceManagment.Controllers;
 
@@ -16,6 +18,7 @@ public class CustomersController : ControllerBase
     /// Initializes a new instance of the <see cref="CustomersController"/> class with the specified customer service.
     /// </summary>
     private readonly ICustomerService _customerService;
+
     /// <summary>
     /// Constructor for CustomersController, initializes the customer service dependency.
     /// </summary>
@@ -26,10 +29,26 @@ public class CustomersController : ControllerBase
     }
 
     /// <summary>
+    /// ModelState errors to a dictionary of field names and their corresponding error messages.
+    /// </summary>
+    /// <param name="modelState"></param>
+    /// <returns></returns>
+    private static Dictionary<string, string[]> ToValidationErrors(ModelStateDictionary modelState)
+    {
+        return modelState
+            .Where(x => x.Value?.Errors.Count > 0)
+            .ToDictionary(
+                k => k.Key,
+                v => v.Value!.Errors.Select(e => e.ErrorMessage).ToArray()
+            );
+    }
+
+    /// <summary>
     /// Retrieves a list of all active customers.
     /// </summary>
     /// <returns>A list of <see cref="CustomerResponseDTO"/>.</returns>
-    [HttpGet]
+    [HttpGet("All")]
+    [ProducesResponseType(typeof(ApiResponse<IEnumerable<CustomerResponseDTO>>), StatusCodes.Status200OK)]
     public async Task<ActionResult<ApiResponse<IEnumerable<CustomerResponseDTO>>>> GetAll()
     {
         var customers = await _customerService.GetAllAsync();
@@ -38,16 +57,36 @@ public class CustomersController : ControllerBase
     }
 
     /// <summary>
+    /// Gets a paginated list of customers based on the provided query parameters, 
+    /// allowing for filtering and sorting.
+    /// </summary>
+    /// <returns></returns>
+    [HttpGet]
+    [ProducesResponseType(typeof(ApiResponse<PagedResult<CustomerResponseDTO>>), StatusCodes.Status200OK)]
+    public async Task<ActionResult<ApiResponse<PagedResult<CustomerResponseDTO>>>> GetPaged([FromQuery] CustomerQueryDTO customerQuery)
+    {
+        var tasks = await _customerService.GetPagedAsync(customerQuery);
+
+        return Ok(ApiResponse<PagedResult<CustomerResponseDTO>>.SuccessResponse(tasks, "Task items returned successfully"));
+    }
+
+
+    /// <summary>
     /// Retrieves a specific customer by their unique identifier.
     /// </summary>
     /// <param name="id">The GUID of the customer.</param>
     /// <returns>The customer details if found.</returns>
     [HttpGet("{id:guid}")]
-    public async Task<ActionResult<CustomerResponseDTO>> GetById(Guid id)
+    [ProducesResponseType(typeof(ApiResponse<CustomerResponseDTO>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<ApiResponse<CustomerResponseDTO>>> GetById(Guid id)
     {
         var customer = await _customerService.GetByIdAsync(id);
-        if (customer is null) return NotFound($"Customer with ID: {id} not found!!");
-        return Ok(customer);
+
+        if (customer is null)
+            return NotFound(ApiResponse<object>.ErrorResponse($"Customer with ID {id} not found"));
+
+        return Ok(ApiResponse<CustomerResponseDTO>.SuccessResponse(customer, "Customer returned successfully!"));
     }
 
     /// <summary>
@@ -56,20 +95,25 @@ public class CustomersController : ControllerBase
     /// <param name="createCustomer">The customer creation request data.</param>
     /// <returns>The newly created customer details.</returns>
     [HttpPost]
-    public async Task<ActionResult<CustomerResponseDTO>> Create([FromBody] CreateCustomerRequest createCustomer)
+    [ProducesResponseType(typeof(ApiResponse<CustomerResponseDTO>), StatusCodes.Status201Created)]
+    [ProducesResponseType(typeof(ApiResponse<Dictionary<string, string[]>>), StatusCodes.Status400BadRequest)]
+    public async Task<ActionResult<ApiResponse<CustomerResponseDTO>>> Create([FromBody] CreateCustomerRequest createCustomer)
     {
-        if (!ModelState.IsValid) return BadRequest(ModelState);
+        if (!ModelState.IsValid)
+            return BadRequest(ApiResponse<Dictionary<string, string[]>>.ErrorResponse("Validation Error", ToValidationErrors(ModelState)));
+
         try
         {
             var createdCustomer = await _customerService.CreateAsync(createCustomer);
-
-            // FIX: Added ID to route values (assuming Name is returned in DTO, adjust if DTO has Id)
-            // If your CustomerResponseDTO doesn't have ID, you might need to add it or use another field.
-            return CreatedAtAction(nameof(GetById), new { id = createdCustomer.Id }, createdCustomer);
+            return CreatedAtAction(
+                nameof(GetById),
+                new { id = createdCustomer.Id },
+                ApiResponse<CustomerResponseDTO>.SuccessResponse(createdCustomer, "Customer created successfully!")
+            );
         }
         catch (Exception ex)
         {
-            return BadRequest(ex.Message);
+            return BadRequest(ApiResponse<object>.ErrorResponse(ex.Message));
         }
     }
 
@@ -78,21 +122,28 @@ public class CustomersController : ControllerBase
     /// </summary>
     /// <param name="id">The GUID of the customer to update.</param>
     /// <param name="updateCustomer">The updated data.</param>
+    /// <returns>The updated customer details if successful.</returns>
     [HttpPut("{id:guid}")]
-    public async Task<ActionResult<CustomerResponseDTO>> Update(Guid id, [FromBody] UpdateCustomerRequest updateCustomer)
+    [ProducesResponseType(typeof(ApiResponse<CustomerResponseDTO>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse<Dictionary<string, string[]>>), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<ApiResponse<CustomerResponseDTO>>> Update(Guid id, [FromBody] UpdateCustomerRequest updateCustomer)
     {
-        if (!ModelState.IsValid) return BadRequest(ModelState);
+        if (!ModelState.IsValid)
+            return BadRequest(ApiResponse<Dictionary<string, string[]>>.ErrorResponse("Validation Error", ToValidationErrors(ModelState)));
+
         try
         {
-            // FIX: Changed parameter order to match Service definition (UpdateAsync(updateCustomer, id))
             var updatedCustomer = await _customerService.UpdateAsync(updateCustomer, id);
 
-            if (updatedCustomer is null) return NotFound($"Customer with ID: {id} not found!!");
-            return Ok(updatedCustomer);
+            if (updatedCustomer is null)
+                return NotFound(ApiResponse<object>.ErrorResponse($"Customer with ID: {id} not found!!"));
+
+            return Ok(ApiResponse<CustomerResponseDTO>.SuccessResponse(updatedCustomer, "Customer updated successfully!!"));
         }
         catch (Exception ex)
         {
-            return BadRequest(ex.Message);
+            return BadRequest(ApiResponse<object>.ErrorResponse(ex.Message));
         }
     }
 
@@ -101,12 +152,15 @@ public class CustomersController : ControllerBase
     /// </summary>
     /// <param name="id">The GUID of the customer to archive.</param>
     [HttpPatch("{id:guid}/archive")]
-    public async Task<ActionResult<bool>> Archive(Guid id) // FIX: Removed [FromBody] as ID comes from URL
+    [ProducesResponseType(typeof(ApiResponse<bool>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status400BadRequest)]
+    public async Task<ActionResult<ApiResponse<bool>>> Archive(Guid id)
     {
         var result = await _customerService.ArchiveCustomerAsync(id);
         if (!result)
-            return BadRequest(new { message = "Customer not found or already archived." });
-        return Ok(result);
+            return BadRequest(ApiResponse<object>.ErrorResponse("Customer not found or already archived."));
+
+        return Ok(ApiResponse<bool>.SuccessResponse(true, "Customer archived successfully."));
     }
 
     /// <summary>
@@ -114,10 +168,14 @@ public class CustomersController : ControllerBase
     /// </summary>
     /// <param name="id">The GUID of the customer to delete.</param>
     [HttpDelete("{id:guid}")]
-    public async Task<ActionResult> Delete(Guid id)
+    [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<ApiResponse<object>>> Delete(Guid id)
     {
         var isDeleted = await _customerService.DeleteAsync(id);
-        if (!isDeleted) return NotFound($"Customer with ID: {id} not found or has existing invoices!");
-        return NoContent();
+        if (!isDeleted)
+            return NotFound(ApiResponse<object>.ErrorResponse($"Customer with ID: {id} not found or has existing invoices!"));
+
+        return Ok(ApiResponse<object>.SuccessResponse(null, "Customer deleted successfully!!"));
     }
 }

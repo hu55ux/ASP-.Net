@@ -57,7 +57,10 @@ if (app.Environment.IsDevelopment())
         {
             options.SwaggerEndpoint("/swagger/v1/swagger.json", "Invoice Management API v1");
             options.RoutePrefix = string.Empty;
-            options.DisplayRequestDuration();S
+            options.DisplayRequestDuration();
+            options.EnableFilter();
+            options.EnableDeepLinking();
+            options.EnableTryItOutByDefault();
         }
         );
 }

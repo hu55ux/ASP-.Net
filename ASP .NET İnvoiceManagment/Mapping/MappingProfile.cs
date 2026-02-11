@@ -5,8 +5,15 @@ using AutoMapper;
 
 namespace ASP_.NET_InvoiceManagment.Mapping;
 
+/// <summary>
+/// Mapping profile for AutoMapper to define how domain models 
+/// are transformed into DTOs and vice versa.
+/// </summary>
 public class MappingProfile : Profile
 {
+    /// <summary>
+    /// Mapping configuration for Invoice and Customer entities to their respective DTOs.
+    /// </summary>
     public MappingProfile()
     {
         CreateMap<Invoice, InvoiceResponseDTO>()
@@ -17,7 +24,12 @@ public class MappingProfile : Profile
            .ForMember(
                dest => dest.InvoiceRowsCount,
                opt => opt.MapFrom(src => src.Rows.Count)
-           );
+           )
+           .ForMember(
+                dest => dest.CustomerName,
+                opt => opt.MapFrom(src => src.Customer.Name)
+            );
+
 
         CreateMap<InvoiceResponseDTO, Invoice>()
             .ForMember(
@@ -32,7 +44,8 @@ public class MappingProfile : Profile
             .ForMember(dest => dest.TotalSum, opt => opt.Ignore())
             .ForMember(dest => dest.CreatedAt, opt => opt.Ignore())
             .ForMember(dest => dest.UpdatedAt, opt => opt.Ignore())
-            .ForMember(dest => dest.DeletedAt, opt => opt.Ignore());
+            .ForMember(dest => dest.DeletedAt, opt => opt.Ignore())
+            .ForMember(dest => dest.Id, opt => opt.Ignore());
 
         CreateMap<UpdateInvoiceRequest, Invoice>()
                 .ForMember(dest => dest.Id, opt => opt.Ignore())

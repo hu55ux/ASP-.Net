@@ -1,5 +1,5 @@
-﻿using ASP_.NET_InvoiceManagment.DTOs.InvoiceDTOs;
-using ASP_.NET_InvoiceManagment.Models;
+﻿using ASP_.NET_InvoiceManagment.Common;
+using ASP_.NET_InvoiceManagment.DTOs.InvoiceDTOs;
 using ASP_.NET_InvoiceManagment.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
@@ -14,6 +14,10 @@ public class InvoicesController : ControllerBase
 {
     private readonly I_InvoiceService _invoiceService;
 
+    /// <summary>
+    /// Constructor for InvoicesController, injecting the invoice service to handle business logic.
+    /// </summary>
+    /// <param name="invoiceService"></param>
     public InvoicesController(I_InvoiceService invoiceService)
     {
         _invoiceService = invoiceService;
@@ -23,15 +27,31 @@ public class InvoicesController : ControllerBase
     /// Retrieves all non-deleted invoices from the system.
     /// </summary>
     /// <returns>A list of <see cref="InvoiceResponseDTO"/>.</returns>
-    [HttpGet]
-    public async Task<ActionResult<IEnumerable<InvoiceResponseDTO>>> GetAll()
+    [HttpGet("All")]
+    public async Task<ActionResult<ApiResponse<IEnumerable<InvoiceResponseDTO>>>> GetAll()
     {
         var invoices = await _invoiceService.GetAllAsync();
-        return Ok(invoices);
+        if (invoices is null || !invoices.Any()) return NotFound(ApiResponse<object?>.ErrorResponse("Invoices not found!"));
+
+        return Ok(ApiResponse<IEnumerable<InvoiceResponseDTO>>.SuccessResponse(invoices, "Invoices retrieved successfully!"));
+    }
+
+    /// <summary>
+    /// Gets a paginated list of invoices based on query parameters for page number and page size.
+    /// </summary>
+    /// <returns></returns>
+    [HttpGet]
+    public async Task<ActionResult<ApiResponse<IEnumerable<InvoiceResponseDTO>>>> GetPaged([FromQuery] InvoiceQueryDTO invoiceQuery)
+    {
+        var invoices = await _invoiceService.GetPagedAsync(invoiceQuery);
+        if (invoices is null) return NotFound(ApiResponse<object?>.ErrorResponse("Invoices not found!"));
+
+        return Ok(ApiResponse<PagedResult<InvoiceResponseDTO>>.SuccessResponse(invoices, "Invoices retrieved successfully!"));
     }
 
     /// <summary>
     /// Retrieves a specific invoice by its unique GUID.
+    /// 
     /// </summary>
     /// <param name="id">The unique identifier of the invoice.</param>
     /// <returns>The invoice details if found.</returns>

@@ -1,4 +1,5 @@
-﻿using ASP_.NET_InvoiceManagment.DTOs.CustomerDTOs;
+﻿using ASP_.NET_InvoiceManagment.Common;
+using ASP_.NET_InvoiceManagment.DTOs.CustomerDTOs;
 using ASP_.NET_InvoiceManagment.Models;
 
 namespace ASP_.NET_InvoiceManagment.Services.Interfaces;
@@ -13,6 +14,14 @@ public interface ICustomerService
     /// </summary>
     /// <returns>A collection of <see cref="CustomerResponseDTO"/>.</returns>
     Task<IEnumerable<CustomerResponseDTO>> GetAllAsync();
+
+    /// <summary>
+    /// Paginated retrieval of customers based on the provided query parameters,
+    /// including filtering, sorting, and searching capabilities.
+    /// </summary>
+    /// <param name="customerQuery"></param>
+    /// <returns> Contains a paginated list of <see cref="CustomerResponseDTO"/> matching the query criteria.</returns>
+    Task<PagedResult<CustomerResponseDTO>> GetPagedAsync(CustomerQueryDTO customerQuery);
 
     /// <summary>
     /// Registers a new customer in the system.

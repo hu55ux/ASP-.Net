@@ -469,5 +469,21 @@ class InvoiceController : ControllerBase
 
 
 
+                                                                        Pagination Filtering Ordering
+
+Pagination - Pagination, böyük məlumat dəstlərini daha kiçik, idarə edilə bilən hissələrə bölmək üçün istifadə olunan 
+bir texnikadır. Bu, istifadəçilərə məlumatları daha asanlıqla gəzməyə və tapmağa imkan verir. 
+Və bu həmçinin serverin yükünü azaltmağa kömək edir, çünki o, yalnız tələb olunan məlumatları göndərir.
+
+Filtering - Filtering, məlumat dəstlərini müəyyən meyarlara əsasən süzmək üçün istifadə olunan bir texnikadır.
+Bu, istifadəçilərə yalnız maraqlandıqları məlumatları görməyə imkan verir. 
+Məsələn, bir məhsul kataloqunda istifadəçilər yalnız müəyyən bir kateqoriyaya aid məhsulları görmək istəyə bilərlər.
+
+Ordering - Ordering, məlumat dəstlərini müəyyən bir sıraya görə sıralamaq üçün istifadə olunan bir texnikadır.
+Bu, istifadəçilərə məlumatları istədikləri qaydada görməyə imkan verir.
+
+
+
+
                                                                  
 */

@@ -91,7 +91,9 @@ public class InvoiceManagmentDbContext : DbContext
 
             // Calculated property mapping
             row.Property(r => r.Sum)
-                .HasPrecision(18, 2);
+               .HasPrecision(18, 2)
+               .HasComputedColumnSql("[Quantity] * [Amount]");
+
         });
     }
 }
