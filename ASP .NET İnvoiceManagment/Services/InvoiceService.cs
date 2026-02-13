@@ -169,7 +169,6 @@ public class InvoiceService : I_InvoiceService
     /// <returns></returns>
     public async Task<PagedResult<InvoiceResponseDTO?>> GetPagedAsync(InvoiceQueryDTO invoiceQuery)
     {
-        invoiceQuery.Validate();
         var query = _context.Invoices
             .AsNoTracking()
             .Include(i => i.Customer)

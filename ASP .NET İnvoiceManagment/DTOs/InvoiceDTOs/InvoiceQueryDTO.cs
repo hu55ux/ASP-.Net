@@ -34,28 +34,4 @@ public class InvoiceQueryDTO
     /// Invoice status for filtering results. Common values include "Created", "Sent", "Paid", "Cancelled", etc.
     /// </summary>
     public string Status { get; set; } = string.Empty;
-
-    /// <summary>
-    /// Validates the query parameters to ensure they are 
-    /// within acceptable ranges and formats.
-    /// </summary>
-    public void Validate()
-    {
-        if (Page < 1) Page = 1;
-        if (PageSize < 1) PageSize = 10;
-        if (PageSize > 100) PageSize = 100;
-        var validSortFields = new[] { "StartDate", "EndDate", "TotalSum", "CreatedAt" };
-        if (!string.IsNullOrEmpty(Sort) && !validSortFields.Contains(Sort))
-        {
-            Sort = "CreatedAt";
-        }
-        var validSortDirections = new[] { "asc", "desc" };
-        if (!string.IsNullOrEmpty(SortDirection) && !validSortDirections.Contains(SortDirection.ToLower()))
-        {
-            SortDirection = "asc";
-        }
-    }
-
-
-
 }

@@ -1,6 +1,13 @@
 using ASP_.NET_InvoiceManagment.Database;
+using ASP_.NET_InvoiceManagment.DTOs.CustomerDTOs;
+using ASP_.NET_InvoiceManagment.DTOs.InvoiceDTOs;
 using ASP_.NET_InvoiceManagment.Services;
 using ASP_.NET_InvoiceManagment.Services.Interfaces;
+using ASP_.NET_InvoiceManagment.Validators;
+using ASP_.NET_InvoiceManagment.Validators.CustomerValidators;
+using ASP_.NET_InvoiceManagment.Validators.InvoiceValidators;
+using FluentValidation;
+using FluentValidation.AspNetCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 
@@ -44,8 +51,17 @@ builder.Services.AddDbContext<InvoiceManagmentDbContext>(
 );
 builder.Services.AddScoped<I_InvoiceService, InvoiceService>();
 builder.Services.AddScoped<ICustomerService, CustomerService>();
-builder.Services.AddAutoMapper(typeof(Program));
+builder.Services.AddScoped<IValidator<CreateCustomerRequest>, CreateCustomerValidator>();
+builder.Services.AddScoped<IValidator<UpdateCustomerRequest>, UpdateCustomerValidator>();
+builder.Services.AddScoped<IValidator<CreateInvoiceRequest>, CreateInvoiceValidator>();
+builder.Services.AddScoped<IValidator<UpdateInvoiceRequest>, UpdateInvoiceValidator>();
+builder.Services.AddScoped<IValidator<CustomerQueryDTO>, CustomerQueryValidator>();
+builder.Services.AddScoped<IValidator<InvoiceQueryDTO>, InvoiceQueryValidator>();
 
+builder.Services.AddFluentValidationAutoValidation();
+
+
+builder.Services.AddAutoMapper(typeof(Program));
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

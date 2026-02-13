@@ -37,40 +37,4 @@ public class CustomerQueryDTO
     /// If true, returns archived; if false, returns active; if null, returns all.
     /// </summary>
     public bool? IsArchived { get; set; } = false;
-
-    /// <summary>
-    /// Ensures the query parameters are within valid ranges and sets default values for sorting.
-    /// </summary>
-    public void Validate()
-    {
-        if (Page < 1) Page = 1;
-
-        if (PageSize < 1)
-        {
-            PageSize = 1;
-        }
-        else if (PageSize > 100)
-        {
-            PageSize = 100;
-        }
-
-        if (string.IsNullOrWhiteSpace(SortDirection))
-        {
-            SortDirection = "asc";
-        }
-        else
-        {
-            SortDirection = SortDirection.Trim().ToLower();
-
-            if (SortDirection != "asc" && SortDirection != "desc")
-            {
-                SortDirection = "asc";
-            }
-        }
-
-        if (string.IsNullOrWhiteSpace(Sort))
-        {
-            Sort = "Name";
-        }
-    }
 }

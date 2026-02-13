@@ -30,5 +30,12 @@ public class UpdateInvoiceRequest
     /// Updated comments or remarks regarding the invoice.
     /// </summary>
     /// <example>Updated: Extended service period for March 2026.</example>
-    public string? Comment { get; set; }
+    public string? Comment { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Status of the invoice, which may be updated to reflect changes 
+    /// in the invoice's lifecycle (e.g., from "Created" to "Sent" or "Paid").
+    /// </summary>
+    /// <example>Sent</example>
+    public string? Status { get; set; } = string.Empty;
 }

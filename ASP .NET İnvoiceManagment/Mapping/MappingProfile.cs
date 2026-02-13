@@ -51,10 +51,10 @@ public class MappingProfile : Profile
                 .ForMember(dest => dest.Id, opt => opt.Ignore())
                 .ForMember(dest => dest.Rows, opt => opt.Ignore())
                 .ForMember(dest => dest.TotalSum, opt => opt.Ignore())
-                .ForMember(dest => dest.Status, opt => opt.Ignore())
                 .ForMember(dest => dest.Customer, opt => opt.Ignore())
                 .ForMember(dest => dest.CreatedAt, opt => opt.Ignore())
                 .ForMember(dest => dest.DeletedAt, opt => opt.Ignore())
+                .ForMember(dest => dest.CustomerId, opt => opt.Ignore())
                 .ForMember(
                     dest => dest.UpdatedAt,
                     opt => opt.MapFrom(_ => DateTimeOffset.UtcNow)

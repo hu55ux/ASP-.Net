@@ -156,7 +156,6 @@ public class CustomerService : ICustomerService
     /// <returns></returns>
     public async Task<PagedResult<CustomerResponseDTO>> GetPagedAsync(CustomerQueryDTO customerQuery)
     {
-        customerQuery.Validate();
         var query = _dbContext.Customers
             .AsNoTracking()
             .Include(c => c.Invoices)

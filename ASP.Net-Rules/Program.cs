@@ -485,5 +485,34 @@ Bu, istifadəçilərə məlumatları istədikləri qaydada görməyə imkan veri
 
 
 
+
+                                                                    
+
+                                                                      Validation Global Exception Handling
+
+Validation, proqram təminatında istifadəçi girişlərinin və digər məlumatların düzgünlüyünü təmin etmək üçün istifadə olunan bir prosesdir.
+Daha açıq desək inputların doğruluğunu yoxlamaq üçün istifadə olunur. Məsələn, bir istifadəçi qeydiyyatı formunda istifadəçi adı, şifrə 
+və email kimi məlumatlar daxil edilir.
+
+Bu məlumatların doğruluğunu təmin etmək üçün validation istifadə olunur. Məsələn, 
+istifadəçi adı minimum 3 simvol olmalıdır, şifrə minimum 6 simvol olmalıdır və email düzgün formatda olmalıdır.
+
+Biz bu inputları həm Front hissədə həmdə Back hissədə validasiya edə bilərik amma bəs bunların hansı daha yaxşıdır.
+Burada cavab hər iki tərəfdə mütləq olmasıdır. Çünki biz həmişə birbaşa Front ilə müraciət etmirik. məsələn biz Postman kimi bir vasitə ilə birbaşa Back-ə müraciət edə bilərik və
+bu zaman əgər biz yalnız Front hissədə validasiya etmişiksə, o zaman bizim Back-ə gələn məlumatların doğruluğunu təmin edə bilmərik.
+Və ya sadəcə Back hissədə Validation etmişiksə bu zaman istifadəçi passvord yerində 100 dəfə "12345" Back hissəyə sorğu göndərər hər sorğudada bizim 
+serverimizə çox böyük yük düşər və bu da bizim serverimizin performansını azaldar. Və ya hətta serverimizin çöküşünə səbəb ola bilər.
+
+
+Validasiyanın bir neçə növü var ki bunlar:
+Data Annotation Validation - Bu növ validation, model siniflərində atributlar istifadə edərək doğrulama qaydalarını təyin etməyə imkan verir. 
+Məsələn, [Required], [StringLength], [EmailAddress] kimi atributlar istifadə edilərək doğrulama qaydaları təyin edilə bilər.
+Ama bu növ validation yalnız sadə doğrulama qaydaları üçün uyğundur və daha kompleks doğrulama qaydaları üçün kifayət qədər güclü deyil.
+Islində biz öz Attributumuzu da yarada bilərik ki, bu da bizim daha kompleks doğrulama qaydalarını təyin etməyə imkan verir. 
+Məsələn, bir istifadəçi qeydiyyatı formunda istifadəçi adının unikal olmasını təmin etmək üçün bir custom validation attribute yarada bilərik.
+Amma biz hər bir fərqli yoxlama üçün bir class yaratsaq bu zaman code-muz şişəcək və bu da bizim proqramımızın performansını azaldacaq. 
+Bu zaman isə bizə Fluent Validation kitabxanası kömək edir ki, bu da bizim doğrulama qaydalarını daha strukturlaşdırılmış və təmiz bir şəkildə təyin etməyə imkan verir.
+
+
                                                                  
 */

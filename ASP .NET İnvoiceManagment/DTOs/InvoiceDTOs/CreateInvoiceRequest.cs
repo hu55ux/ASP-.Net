@@ -29,12 +29,12 @@ public class CreateInvoiceRequest
     /// Optional remarks or notes regarding the invoice.
     /// </summary>
     /// <example>Monthly subscription fee for February 2026.</example>
-    public string? Comment { get; set; }
+    public string? Comment { get; set; } = string.Empty;
 
     /// <summary>
     /// The initial lifecycle status of the invoice. 
     /// Typically defaults to 'Created' (0).
     /// </summary>
     /// <example>0</example>
-    public InvoiceStatus Status { get; set; }
+    public string? Status { get; set; } = string.Empty;
 }
