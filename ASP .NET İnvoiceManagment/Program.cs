@@ -1,6 +1,7 @@
 using ASP_.NET_InvoiceManagment.Database;
 using ASP_.NET_InvoiceManagment.DTOs.CustomerDTOs;
 using ASP_.NET_InvoiceManagment.DTOs.InvoiceDTOs;
+using ASP_.NET_InvoiceManagment.Middleware;
 using ASP_.NET_InvoiceManagment.Services;
 using ASP_.NET_InvoiceManagment.Services.Interfaces;
 using ASP_.NET_InvoiceManagment.Validators;
@@ -80,7 +81,7 @@ if (app.Environment.IsDevelopment())
         }
         );
 }
-
+app.UseMiddleware<GlobalExceptionMiddleware>();
 app.UseAuthorization();
 
 app.MapControllers();

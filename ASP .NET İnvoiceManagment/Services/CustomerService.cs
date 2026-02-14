@@ -76,7 +76,6 @@ public class CustomerService : ICustomerService
     /// <returns>A DTO of the updated customer.</returns>
     public async Task<CustomerResponseDTO> UpdateAsync(UpdateCustomerRequest updateCustomer, Guid id)
     {
-        // Optimization: No need to include Invoices for a simple profile update
         var updatingCustomer = await _dbContext.Customers
             .FirstOrDefaultAsync(c => c.Id == id);
 

@@ -488,7 +488,7 @@ Bu, istifadəçilərə məlumatları istədikləri qaydada görməyə imkan veri
 
                                                                     
 
-                                                                      Validation Global Exception Handling
+                                                                        Validation 
 
 Validation, proqram təminatında istifadəçi girişlərinin və digər məlumatların düzgünlüyünü təmin etmək üçün istifadə olunan bir prosesdir.
 Daha açıq desək inputların doğruluğunu yoxlamaq üçün istifadə olunur. Məsələn, bir istifadəçi qeydiyyatı formunda istifadəçi adı, şifrə 
@@ -512,6 +512,26 @@ Islində biz öz Attributumuzu da yarada bilərik ki, bu da bizim daha kompleks 
 Məsələn, bir istifadəçi qeydiyyatı formunda istifadəçi adının unikal olmasını təmin etmək üçün bir custom validation attribute yarada bilərik.
 Amma biz hər bir fərqli yoxlama üçün bir class yaratsaq bu zaman code-muz şişəcək və bu da bizim proqramımızın performansını azaldacaq. 
 Bu zaman isə bizə Fluent Validation kitabxanası kömək edir ki, bu da bizim doğrulama qaydalarını daha strukturlaşdırılmış və təmiz bir şəkildə təyin etməyə imkan verir.
+
+
+
+
+
+                                                                    Global Exception Handling
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
                                                                  

@@ -52,6 +52,9 @@ public class CustomersController : ControllerBase
     public async Task<ActionResult<ApiResponse<IEnumerable<CustomerResponseDTO>>>> GetAll()
     {
         var customers = await _customerService.GetAllAsync();
+        if (customers is null || !customers.Any())
+            return Ok(ApiResponse<IEnumerable<CustomerResponseDTO>>.SuccessResponse(customers, "No customers found!"));
+
         return Ok(ApiResponse<IEnumerable<CustomerResponseDTO>>.SuccessResponse(
             customers, "Customers returned successfully!"));
     }
