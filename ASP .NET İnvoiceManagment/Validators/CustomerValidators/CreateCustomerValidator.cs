@@ -4,12 +4,12 @@ using FluentValidation;
 namespace ASP_.NET_InvoiceManagment.Validators.CustomerValidators;
 
 /// <summary>
-/// Custom validator for validating the CreateCustomerRequest DTO using FluentValidation.
+/// Validator for the customer creation request to ensure all business rules for customer data are met.
 /// </summary>
 public class CreateCustomerValidator : AbstractValidator<CreateCustomerRequest>
 {
     /// <summary>
-    /// Constructor that defines the validation rules for creating a new customer.
+    /// Initializes validation rules for customer details including name format, email authenticity, and contact information.
     /// </summary>
     public CreateCustomerValidator()
     {
@@ -29,7 +29,6 @@ public class CreateCustomerValidator : AbstractValidator<CreateCustomerRequest>
         // Phone Number Validation
         RuleFor(x => x.PhoneNumber)
             .NotEmpty().WithMessage("Phone number is required.")
-            // This Regex supports international formats like +994... or 050...
             .Matches(@"^\+?[1-9]\d{1,14}$").WithMessage("Phone number is not in a valid international format.");
 
         // Address Validation

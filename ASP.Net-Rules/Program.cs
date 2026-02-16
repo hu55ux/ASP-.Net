@@ -519,11 +519,27 @@ Bu zaman isə bizə Fluent Validation kitabxanası kömək edir ki, bu da bizim 
 
                                                                     Global Exception Handling
 
+Global Exception Handling, proqram təminatında meydana gələn istisnaların (exceptions) mərkəzləşdirilmiş bir şəkildə idarə 
+edilməsini təmin edən bir texnikadır.
+Bu, proqramın daha stabil və etibarlı olmasına kömək edir, çünki bütün istisnalar mərkəzləşdirilmiş bir şəkildə idarə edilir 
+və düzgün cavablar qaytarılır.
+Məsələn, bir veb tətbiqində istifadəçi bir səhifəyə daxil olmaq istədikdə, amma o səhifə mövcud deyilsə, bu zaman bir 404 Not 
+Found istisnası meydana gələcəkdir.
+Bunun üçündə bir GlobalExceptionMiddleware yarada bilərik ki, bu middleware bütün istisnaları tutacaq və onlara uyğun cavablar qaytaracaqdır.
 
 
+        
+                                                                     Authorization and Authentication
 
+Authorization və Authentication, proqram təminatında istifadəçi kimliyinin doğrulanması və istifadəçi hüquqlarının idarə edilməsi üçün istifadə olunan iki əsas konseptdir.
+Authorization giriş icazəsinin olub olmaması , Authentication isə hansı səviyyəyə malik olduğunu göstərir. Məsələn, bir veb tətbiqində istifadəçi qeydiyyatdan keçərkən, onun kimliyi doğrulanır (Authentication) və sonra ona müəyyən hüquqlar verilir (Authorization).
+Bunu belə izah edə bilərikki əgər biz bir user olaraq bir sayta daxil olsaq bizim həmin yerdə sadəcə userlara uyğun hüquqlarımız və icazələrimiz olacaq
+Yox əgər biz manager or admin olaraq daxil olsaq bizim həmin yerdə manager və adminlara uyğun hüquqlarımız və icazələrimiz olacaq.
 
-
+İlk olaraq Authorizationa baxaq:
+Authorization, istifadəçinin müəyyən bir əməliyyatı yerinə yetirmək üçün kifayət qədər hüquqlarının olub olmadığını yoxlamaq üçün istifadə olunur.
+Bunun üçün biz bir applicationUser classı yaradırıq və bu classımızı IdentityUser classından törədərək istifadəçi məlumatlarını saxlayırıq. Sonra isə biz 
+role classı yaradırıq və bu classımızı IdentityRole classından törədərək istifadəçi rollarını saxlayırıq.
 
 
 

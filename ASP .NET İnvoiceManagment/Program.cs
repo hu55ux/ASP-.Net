@@ -1,14 +1,11 @@
 using ASP_.NET_InvoiceManagment.Database;
-using ASP_.NET_InvoiceManagment.DTOs.CustomerDTOs;
-using ASP_.NET_InvoiceManagment.DTOs.InvoiceDTOs;
 using ASP_.NET_InvoiceManagment.Middleware;
+using ASP_.NET_InvoiceManagment.Models;
 using ASP_.NET_InvoiceManagment.Services;
 using ASP_.NET_InvoiceManagment.Services.Interfaces;
-using ASP_.NET_InvoiceManagment.Validators;
-using ASP_.NET_InvoiceManagment.Validators.CustomerValidators;
-using ASP_.NET_InvoiceManagment.Validators.InvoiceValidators;
 using FluentValidation;
 using FluentValidation.AspNetCore;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 
@@ -46,20 +43,31 @@ builder.Services.AddSwaggerGen(
         }
     });
 
+#region Services
+
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnectionString");
 builder.Services.AddDbContext<InvoiceManagmentDbContext>(
     options => options.UseSqlServer(connectionString)
 );
-builder.Services.AddScoped<I_InvoiceService, InvoiceService>();
-builder.Services.AddScoped<ICustomerService, CustomerService>();
-builder.Services.AddScoped<IValidator<CreateCustomerRequest>, CreateCustomerValidator>();
-builder.Services.AddScoped<IValidator<UpdateCustomerRequest>, UpdateCustomerValidator>();
-builder.Services.AddScoped<IValidator<CreateInvoiceRequest>, CreateInvoiceValidator>();
-builder.Services.AddScoped<IValidator<UpdateInvoiceRequest>, UpdateInvoiceValidator>();
-builder.Services.AddScoped<IValidator<CustomerQueryDTO>, CustomerQueryValidator>();
-builder.Services.AddScoped<IValidator<InvoiceQueryDTO>, InvoiceQueryValidator>();
 
-builder.Services.AddFluentValidationAutoValidation();
+builder.Services.AddIdentity<AppUser, IdentityRole>()
+    .AddEntityFrameworkStores<InvoiceManagmentDbContext>();
+builder.Services
+    .AddScoped<I_InvoiceService, InvoiceService>();
+builder.Services
+    .AddScoped<ICustomerService, CustomerService>();
+builder.Services.AddScoped<IAuthService, AuthService>();
+
+#endregion
+
+#region Validators
+
+builder.Services
+    .AddFluentValidationAutoValidation();
+builder.Services
+    .AddValidatorsFromAssemblyContaining<Program>();
+
+#endregion
 
 
 builder.Services.AddAutoMapper(typeof(Program));
@@ -73,7 +81,7 @@ if (app.Environment.IsDevelopment())
         options =>
         {
             options.SwaggerEndpoint("/swagger/v1/swagger.json", "Invoice Management API v1");
-            options.RoutePrefix = string.Empty;
+            //options.RoutePrefix = string.Empty;
             options.DisplayRequestDuration();
             options.EnableFilter();
             options.EnableDeepLinking();

@@ -5,15 +5,14 @@ using FluentValidation;
 namespace ASP_.NET_InvoiceManagment.Validators.InvoiceValidators;
 
 /// <summary>
-/// Class for validating the CreateInvoiceRequest DTO. This class uses FluentValidation to define rules for the 
-/// properties of CreateInvoiceRequest, ensuring that the data provided 
-/// when creating a new invoice is valid and meets the necessary criteria.
+/// Validator for invoice creation requests, ensuring that mandatory fields, 
+/// chronological date ranges, and lifecycle statuses are valid before processing.
 /// </summary>
 public class CreateInvoiceValidator : AbstractValidator<CreateInvoiceRequest>
 {
     /// <summary>
-    /// Constructor for CreateInvoiceValidator. Here we define all 
-    /// the validation rules for the CreateInvoiceRequest DTO.
+    /// Initializes strict validation rules for creating new invoices, 
+    /// focusing on customer identification and logical date sequences.
     /// </summary>
     public CreateInvoiceValidator()
     {
@@ -38,12 +37,12 @@ public class CreateInvoiceValidator : AbstractValidator<CreateInvoiceRequest>
     }
 
     /// <summary>
-    /// Status checking for enum type. If the Status property in CreateInvoiceRequest is 
-    /// of type InvoiceStatus, this method checks if the provided status is a valid enum value.
+    /// Validates whether the provided string matches a defined value within the <see cref="InvoiceStatus"/> enumeration.
     /// </summary>
+    /// <param name="status">The status string to verify.</param>
+    /// <returns>True if the status is a valid member of the enum; otherwise, false.</returns>
     private bool BeAValidStatus(string? status)
     {
         return Enum.TryParse(typeof(InvoiceStatus), status, true, out _);
     }
-
 }

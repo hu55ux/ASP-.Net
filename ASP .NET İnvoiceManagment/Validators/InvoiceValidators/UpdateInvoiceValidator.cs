@@ -5,33 +5,52 @@ using FluentValidation;
 namespace ASP_.NET_InvoiceManagment.Validators.InvoiceValidators;
 
 /// <summary>
-/// Class for validating the UpdateInvoiceRequest DTO. This class uses FluentValidation
+/// Validator for invoice updates, ensuring that at least one attribute is modified 
+/// and that date ranges and status values remain consistent.
 /// </summary>
 public class UpdateInvoiceValidator : AbstractValidator<UpdateInvoiceRequest>
 {
     /// <summary>
-    /// Constructor for Update Invoice Validator. Here we define all 
-    /// the validation rules for the UpdateInvoiceRequest DTO.
+    /// Initializes validation rules for invoice updates, enforcing consistency between 
+    /// start and end dates and validating the invoice lifecycle status.
     /// </summary>
     public UpdateInvoiceValidator()
     {
-        RuleFor(x => x.CustomerId)
-            .NotEmpty().WithMessage("Customer identifier is required.");
+        // Global rule: Prevent empty update requests
+        RuleFor(x => x)
+            .Must(x => x.CustomerId != default ||
+                       x.StartDate != default ||
+                       x.EndDate != default ||
+                       !string.IsNullOrWhiteSpace(x.Comment) ||
+                       !string.IsNullOrWhiteSpace(x.Status))
+            .WithMessage("At least one field (CustomerId, StartDate, EndDate, Comment, or Status) must be provided for update.");
 
+        // CustomerId Validation
+        RuleFor(x => x.CustomerId)
+            .NotEmpty().WithMessage("Customer identifier is required.")
+            .When(x => x.CustomerId != default);
+
+        // Date Validation
         RuleFor(x => x.StartDate)
-            .NotEmpty().WithMessage("Start date is required.");
+            .NotEmpty().WithMessage("Start date is required.")
+            .When(x => x.StartDate != default);
 
         RuleFor(x => x.EndDate)
             .NotEmpty().WithMessage("End date is required.")
             .GreaterThan(x => x.StartDate)
-            .WithMessage("End date must be later than the start date.");
+            .WithMessage("End date must be later than the start date.")
+            .When(x => x.EndDate != default && x.StartDate != default);
 
+        // Comment Validation
         RuleFor(x => x.Comment)
-            .MaximumLength(500).WithMessage("Comment length cannot exceed 500 characters.");
+            .MaximumLength(500).WithMessage("Comment length cannot exceed 500 characters.")
+            .When(x => !string.IsNullOrEmpty(x.Comment));
 
+        // Status Validation
         RuleFor(x => x.Status)
             .NotEmpty().WithMessage("Status is required.")
-            .Must(BeAValidStatus).WithMessage("Invalid status value. Allowed: Created, Sent, Paid, Cancelled.");
+            .Must(BeAValidStatus).WithMessage("Invalid status value. Allowed: Created, Sent, Paid, Cancelled.")
+            .When(x => !string.IsNullOrEmpty(x.Status));
     }
 
     /// <summary>

@@ -4,16 +4,12 @@ using FluentValidation;
 namespace ASP_.NET_InvoiceManagment.Validators;
 
 /// <summary>
-/// Validator class for validating the InvoiceQueryDTO. This class 
-/// uses FluentValidation to define rules for pagination, sorting, and searching when querying invoices.
+/// Validator for the <see cref="InvoiceQueryDTO"/> to ensure that pagination, sorting, and search parameters follow defined business constraints.
 /// </summary>
 public class InvoiceQueryValidator : AbstractValidator<InvoiceQueryDTO>
 {
-
-
     /// <summary>
-    /// Constructor for InvoiceQueryValidator. Here we define 
-    /// all the validation rules for the InvoiceQueryDTO, including:
+    /// Initializes validation rules for invoice querying, including page limits, whitelisted sort fields, and search term length.
     /// </summary>
     public InvoiceQueryValidator()
     {

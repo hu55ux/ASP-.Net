@@ -1,4 +1,5 @@
 ﻿using ASP_.NET_InvoiceManagment.Models;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace ASP_.NET_InvoiceManagment.Database;
@@ -7,13 +8,31 @@ namespace ASP_.NET_InvoiceManagment.Database;
 /// The database context for the Invoice Management system.
 /// Handles the configuration and mapping of Customer, Invoice, and InvoiceRow entities.
 /// </summary>
-public class InvoiceManagmentDbContext : DbContext
+public class InvoiceManagmentDbContext : IdentityDbContext<AppUser>
 {
+    /// <summary>
+    /// Constructor for the InvoiceManagmentDbContext class. It takes 
+    /// DbContextOptions as a parameter and passes it to the base DbContext constructor.
+    /// </summary>
+    /// <param name="options"></param>
     public InvoiceManagmentDbContext(DbContextOptions options) : base(options)
     { }
 
+    /// <summary>
+    /// Customers: Represents the customers in the system. Each customer can have multiple invoices.
+    /// </summary>
     public DbSet<Customer> Customers => Set<Customer>();
+
+    /// <summary>
+    /// Invoices: Represents the invoices in the system. Each invoice is associated with 
+    /// one customer and can have multiple invoice rows.
+    /// </summary>
     public DbSet<Invoice> Invoices => Set<Invoice>();
+
+    /// <summary>
+    /// InvoiceRows: Represents the individual line items on an invoice. Each row is associated with
+    /// invoice and contains details about the service provided, quantity, amount, and calculated sum.
+    /// </summary>
     public DbSet<InvoiceRow> InvoiceRows => Set<InvoiceRow>();
 
     /// <summary>
@@ -36,8 +55,6 @@ public class InvoiceManagmentDbContext : DbContext
                 .IsRequired()
                 .HasMaxLength(100);
 
-            // One-to-Many: Customer has many Invoices. 
-            // Restrict delete to prevent losing invoices if a customer is deleted.
             customer.HasMany(c => c.Invoices)
                 .WithOne(i => i.Customer)
                 .HasForeignKey(i => i.CustomerId)
@@ -52,7 +69,6 @@ public class InvoiceManagmentDbContext : DbContext
             invoice.Property(i => i.Status)
                 .IsRequired();
 
-            // High precision for currency values
             invoice.Property(i => i.TotalSum)
                 .HasPrecision(18, 2);
 
@@ -65,8 +81,6 @@ public class InvoiceManagmentDbContext : DbContext
             invoice.Property(i => i.Comment)
                 .HasMaxLength(500);
 
-            // One-to-Many: Invoice has many Rows.
-            // Cascade delete: If invoice is removed, its rows are also removed.
             invoice.HasMany(i => i.Rows)
                 .WithOne()
                 .HasForeignKey(r => r.InvoiceId)
@@ -82,14 +96,12 @@ public class InvoiceManagmentDbContext : DbContext
                 .IsRequired()
                 .HasMaxLength(250);
 
-            // Precision for quantities (3 decimal places for fractional weights/hours)
             row.Property(r => r.Quantity)
                 .HasPrecision(18, 3);
 
             row.Property(r => r.Amount)
                 .HasPrecision(18, 2);
 
-            // Calculated property mapping
             row.Property(r => r.Sum)
                .HasPrecision(18, 2)
                .HasComputedColumnSql("[Quantity] * [Amount]");

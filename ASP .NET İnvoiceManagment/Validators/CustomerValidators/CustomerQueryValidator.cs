@@ -4,12 +4,12 @@ using FluentValidation;
 namespace ASP_.NET_InvoiceManagment.Validators;
 
 /// <summary>
-/// Validator for CustomerQueryDTO to ensure that pagination, sorting, and filtering parameters are valid.
+/// Validator for the <see cref="CustomerQueryDTO"/> to ensure valid pagination, sorting, and filtering parameters.
 /// </summary>
 public class CustomerQueryValidator : AbstractValidator<CustomerQueryDTO>
 {
     /// <summary>
-    /// Constructor to define validation rules for CustomerQueryDTO properties.
+    /// Initializes validation rules for query parameters including page bounds, allowed sort fields, and search term length.
     /// </summary>
     public CustomerQueryValidator()
     {
