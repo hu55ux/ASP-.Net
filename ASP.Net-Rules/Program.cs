@@ -544,6 +544,41 @@ role classı yaradırıq və bu classımızı IdentityRole classından törədə
 
 
 
+                                                                        JWT(JSON Web Tokens)
+
+JWT (JSON Web Token) müasir veb tətbiqlərdə tərəflər arasında məlumatın təhlükəsiz və yığcam şəkildə ötürülməsi üçün istifadə olunan açıq standartdır (RFC 7519). Əsasən autentifikasiya (istifadəçi girişi) və informasiya mübadiləsi üçün tətbiq edilir.
+
+JWT-nin Açılışı və Strukturu
+JWT nöqtələrlə (.) ayrılmış üç əsas hissədən ibarətdir. Xarici görünüşü adətən belə olur: xxxxx.yyyyy.zzzzz.
+
+1. Header (Başlıq)
+Tokenin növü (JWT) və istifadə olunan şifrləmə alqoritmi (məsələn: HMAC SHA256 və ya RSA) haqqında məlumat saxlayır.
+
+Məsələn: {"alg": "HS256", "typ": "JWT"}
+
+2. Payload (Yük/Məlumat)
+Burada əsas məlumatlar (claims) saxlanılır. Məsələn, istifadəçinin ID-si, adı və ya tokenin bitmə vaxtı.
+
+Məsələn: {"sub": "1234567890", "name": "John Doe", "admin": true}
+
+3. Signature (İmza)
+Tokenin yolda dəyişdirilmədiyini yoxlamaq üçün istifadə olunur. Header və Payload birləşdirilir, gizli bir açar (secret key) ilə alqoritm vasitəsilə imzalanır.
+
+JWT Necə İşləyir?
+JWT-nin işləmə mexanizmi sadədir və serverin yaddaşını (session) doldurmur:
+ 
+1. Giriş: İstifadəçi login və şifrəsini göndərir.
+
+2. Yaradılma: Server məlumatları yoxlayır və istifadəçiyə məxsus bir JWT yaradıb geri qaytarır.
+
+3. Saxlanma: Brauzer bu tokeni adətən localStorage və ya Cookie-də saxlayır.
+
+4. İstifadə: İstifadəçi hər hansı bir sorğu göndərdikdə, tokeni "Authorization" başlığında (Header) serverə təqdim edir:
+Authorization: Bearer <token>
+
+5. Doğrulama: Server gələn imzayı özündəki gizli açarla yoxlayır. Əgər imza düzdürsə, istifadəçiyə icazə verilir.
+
+
 
 
 

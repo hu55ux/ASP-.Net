@@ -1,7 +1,13 @@
-﻿using ASP_.NET_InvoiceManagment.DTOs.Auth;
+﻿using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
+using System.Threading.Tasks;
+using ASP_.NET_InvoiceManagment.DTOs.Auth;
 using ASP_.NET_InvoiceManagment.Models;
 using ASP_.NET_InvoiceManagment.Services.Interfaces;
+using Microsoft.AspNetCore.Components.Forms.Mapping;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.IdentityModel.Tokens;
 
 namespace ASP_.NET_InvoiceManagment.Services;
 
@@ -13,14 +19,16 @@ public class AuthService : IAuthService
 {
 
     private readonly UserManager<AppUser> _userManager;
+    private readonly IConfiguration _configuration;
 
     /// <summary>
     /// Constructor for this class
     /// </summary>
     /// <param name="userManager"></param>
-    public AuthService(UserManager<AppUser> userManager)
+    public AuthService(UserManager<AppUser> userManager, IConfiguration configuration)
     {
         _userManager = userManager;
+        _configuration = configuration;
     }
 
     /// <summary>
@@ -46,13 +54,8 @@ public class AuthService : IAuthService
             throw new UnauthorizedAccessException("Invalid login or password!");
         }
 
-        return new AuthResponseDTO
-        {
-            Email = user.Email! 
-        };
+        return CreateTokenAsync(user);
     }
-
-
 
     /// <summary>
     /// Handles the creation of a new user account in the system.
@@ -96,5 +99,48 @@ public class AuthService : IAuthService
         {
             Email = user.Email
         };
+    }
+
+    private async Task<AuthResponseDTO> CreateTokenAsync(AppUser user)
+    {
+        var jwtSettings = _configuration.GetSection("JWTSettings");
+        var secretKey = jwtSettings["SecretKey"];
+        var issuer = jwtSettings["Issuer"];
+        var audience = jwtSettings["Audience"];
+        var expirationInMinutes = int.Parse(jwtSettings["ExpirationInMinutes"]!);
+
+        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey!));
+
+        var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+        var roles = await _userManager.GetRolesAsync(user);
+
+        var claims = new List<Claim>
+        {
+            new Claim(ClaimTypes.NameIdentifier,user.Id),
+            new Claim(ClaimTypes.Name,user.UserName),
+            new Claim(ClaimTypes.Email,user.Email),
+            new Claim(JwtRegisteredClaimNames.Jti,Guid.NewGuid().ToString())
+        };
+
+        foreach (var role in roles)
+        {
+            claims.Add(new Claim(ClaimTypes.Role, role));
+        }
+
+        var tokens = new JwtSecurityToken(
+            issuer: issuer,
+            audience: audience,
+            claims: claims,
+            expires: DateTime.UtcNow.AddMinutes(expirationInMinutes),
+            signingCredentials: credentials);
+
+        var tokenString=
+
+        return new AuthResponseDTO
+        {
+            AccessToken=
+        }
+
+
     }
 }

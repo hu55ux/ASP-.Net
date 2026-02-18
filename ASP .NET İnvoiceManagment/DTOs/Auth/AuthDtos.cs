@@ -45,8 +45,6 @@ public class LoginRequest
     /// <example>someString@gmail.com</example>
     public string Email { get; set; } = string.Empty;
 
-
-
     /// <summary>
     /// Password of the user. This property 
     /// is required for login and is used to authenticate the user when they log in to the system.
@@ -67,4 +65,7 @@ public class AuthResponseDTO
     /// </summary>
     /// <example>someString@gmail.com</example>
     public string Email { get; set; } = string.Empty;
+    public string AccessToken { get; set; } = string.Empty;
+    public DateTime ExpiredAt { get; set; }
+    public IEnumerable<string> Roles { get; set; } = new List<string>();
 }

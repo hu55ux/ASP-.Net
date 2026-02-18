@@ -24,17 +24,6 @@ public class ApiResponse<T>
     public T? Data { get; set; }
 
     /// <summary>
-    /// long property that represents the execution time of the API operation in nanoseconds. 
-    /// It is nullable, allowing for cases where execution time may not be measured or relevant to include in the response.
-    /// </summary>
-    public long? ExecutionTimeNs { get; set; }
-
-    /// <summary>
-    /// Errors property of type object that can hold any error details related to the API response.
-    /// </summary>
-    public object? Errors { get; set; }
-
-    /// <summary>
     /// SuccessResponse is a static method that creates and returns an instance of 
     /// ApiResponse<T> with the Success property set to true
     /// </summary>
@@ -64,8 +53,6 @@ public class ApiResponse<T>
         Success = false,
         Message = message,
         Data = default,
-        Errors = errors,
-        ExecutionTimeNs = executionTimeMs.HasValue ? executionTimeMs.Value * 1_000_000 : null
     };
 
 

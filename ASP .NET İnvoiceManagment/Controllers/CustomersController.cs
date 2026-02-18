@@ -1,7 +1,7 @@
-﻿using System.Threading.Tasks;
-using ASP_.NET_InvoiceManagment.Common;
+﻿using ASP_.NET_InvoiceManagment.Common;
 using ASP_.NET_InvoiceManagment.DTOs.CustomerDTOs;
 using ASP_.NET_InvoiceManagment.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
@@ -98,6 +98,7 @@ public class CustomersController : ControllerBase
     /// <param name="createCustomer">The customer creation request data.</param>
     /// <returns>The newly created customer details.</returns>
     [HttpPost]
+    [Authorize]
     [ProducesResponseType(typeof(ApiResponse<CustomerResponseDTO>), StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(ApiResponse<Dictionary<string, string[]>>), StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<ApiResponse<CustomerResponseDTO>>> Create([FromBody] CreateCustomerRequest createCustomer)

@@ -1,3 +1,4 @@
+using System.Text;
 using ASP_.NET_InvoiceManagment.Database;
 using ASP_.NET_InvoiceManagment.Middleware;
 using ASP_.NET_InvoiceManagment.Models;
@@ -5,8 +6,10 @@ using ASP_.NET_InvoiceManagment.Services;
 using ASP_.NET_InvoiceManagment.Services.Interfaces;
 using FluentValidation;
 using FluentValidation.AspNetCore;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -41,6 +44,30 @@ builder.Services.AddSwaggerGen(
         {
             options.IncludeXmlComments(xmlPath);
         }
+        options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+        {
+            Description = "JWT Authorization header using Bearer scheme.\r\n\r\n Example: Bearer {token}",
+            Name = "Authorization",
+            In = ParameterLocation.Header,
+            Type = SecuritySchemeType.ApiKey,
+            Scheme = "Bearer",
+            BearerFormat = "JWT"
+        });
+        options.AddSecurityRequirement(
+            new OpenApiSecurityRequirement
+            {
+                    {
+                        new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference
+                            {
+                                Type = ReferenceType.SecurityScheme,
+                                Id="Bearer"
+                            }
+                        },
+                        Array.Empty<string>()
+                    }
+            });
     });
 
 #region Services
@@ -50,7 +77,43 @@ builder.Services.AddDbContext<InvoiceManagmentDbContext>(
     options => options.UseSqlServer(connectionString)
 );
 
-builder.Services.AddIdentity<AppUser, IdentityRole>()
+
+var jwtSettings = builder.Configuration.GetSection("JWTSettings");
+var secretKey = jwtSettings["SecretKey"];
+var issuer = jwtSettings["Issuer"];
+var audience = jwtSettings["Audience"];
+
+builder.Services.AddAuthentication(
+    options =>
+    {
+        options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+        options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    }
+    )
+    .AddJwtBearer(
+        options =>
+        {
+            options.TokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateIssuer = true,
+                ValidateAudience = true,
+                ValidateLifetime = true,
+                ValidateIssuerSigningKey = true,
+                ValidIssuer = issuer,
+                ValidAudience = audience,
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey!)),
+                ClockSkew = TimeSpan.Zero
+            };
+        }
+    );
+
+builder.Services.AddAuthorization();
+
+builder.Services.AddIdentity<AppUser, IdentityRole>(
+    options =>
+    {
+        options.Password.RequireNonAlphanumeric = false;
+    })
     .AddEntityFrameworkStores<InvoiceManagmentDbContext>();
 builder.Services
     .AddScoped<I_InvoiceService, InvoiceService>();
@@ -90,8 +153,9 @@ if (app.Environment.IsDevelopment())
         );
 }
 app.UseMiddleware<GlobalExceptionMiddleware>();
-app.UseAuthorization();
+app.UseAuthentication();
 
+app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
