@@ -1,4 +1,4 @@
-﻿namespace ASP_.NET_InvoiceManagment.DTOs.Auth;
+﻿namespace ASP_.NET_InvoiceManagementAuth.DTOs.Auth;
 
 /// <summary>
 /// RegisterRequest: This class represents the data transfer object (DTO) for user registration.
@@ -59,13 +59,41 @@ public class LoginRequest
 /// </summary>
 public class AuthResponseDTO
 {
+
     /// <summary>
-    /// Email of the authenticated user. This property is included in the response to provide 
-    /// information about the user who has successfully logged in.
+    /// Access token
     /// </summary>
-    /// <example>someString@gmail.com</example>
-    public string Email { get; set; } = string.Empty;
     public string AccessToken { get; set; } = string.Empty;
-    public DateTime ExpiredAt { get; set; }
+
+    /// <summary>
+    /// Token Expires date 
+    /// </summary>
+    public DateTimeOffset ExpiresAt { get; set; }
+
+    /// <summary>
+    /// Refresh token
+    /// </summary>
+    public string RefreshToken { get; set; } = string.Empty;
+
+    /// <summary>
+    /// RefreshToken Expires date 
+    /// </summary>
+    public DateTimeOffset RefreshTokenExpiresAt { get; set; }
+
+    /// <summary>
+    /// User Email
+    /// </summary>
+    /// <example>john@doe.com</example>
+    public string Email { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Roles of the user. This property is a collection of 
+    /// strings that represents the roles assigned to the authenticated user.
+    /// </summary>
     public IEnumerable<string> Roles { get; set; } = new List<string>();
+}
+
+public class RefreshTokenRequest
+{
+    public string RefreshToken { get; set; } = string.Empty;
 }

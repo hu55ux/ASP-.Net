@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 
-namespace ASP_.NET_InvoiceManagment.Models;
+namespace ASP_.NET_InvoiceManagementAuth.Models;
 
 /// <summary>
 /// Represents a customized identity user within the system. 

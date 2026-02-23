@@ -1,7 +1,7 @@
-﻿using ASP_.NET_InvoiceManagment.DTOs.Auth;
+﻿using ASP_.NET_InvoiceManagementAuth.DTOs.Auth;
 using FluentValidation;
 
-namespace ASP_.NET_InvoiceManagment.Validators;
+namespace ASP_.NET_InvoiceManagementAuth.Validators;
 
 /// <summary>
 /// Validator for the login request to ensure required credentials are provided and properly formatted.

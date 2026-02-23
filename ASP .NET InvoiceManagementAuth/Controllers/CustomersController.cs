@@ -1,11 +1,11 @@
-﻿using ASP_.NET_InvoiceManagment.Common;
-using ASP_.NET_InvoiceManagment.DTOs.CustomerDTOs;
-using ASP_.NET_InvoiceManagment.Services.Interfaces;
+﻿using ASP_.NET_InvoiceManagementAuth.Common;
+using ASP_.NET_InvoiceManagementAuth.DTOs.CustomerDTOs;
+using ASP_.NET_InvoiceManagementAuth.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
-namespace ASP_.NET_InvoiceManagment.Controllers;
+namespace ASP_.NET_InvoiceManagementAuth.Controllers;
 
 /// <summary>
 /// Provides endpoints for managing customers, including retrieval, creation, updates, and deletion.
@@ -49,6 +49,8 @@ public class CustomersController : ControllerBase
     /// <returns>A list of <see cref="CustomerResponseDTO"/>.</returns>
     [HttpGet("All")]
     [ProducesResponseType(typeof(ApiResponse<IEnumerable<CustomerResponseDTO>>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status404NotFound)]
+    [Authorize]
     public async Task<ActionResult<ApiResponse<IEnumerable<CustomerResponseDTO>>>> GetAll()
     {
         var customers = await _customerService.GetAllAsync();
@@ -100,6 +102,7 @@ public class CustomersController : ControllerBase
     [HttpPost]
     [ProducesResponseType(typeof(ApiResponse<CustomerResponseDTO>), StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(ApiResponse<Dictionary<string, string[]>>), StatusCodes.Status400BadRequest)]
+    [Authorize]
     public async Task<ActionResult<ApiResponse<CustomerResponseDTO>>> Create([FromBody] CreateCustomerRequest createCustomer)
     {
         if (!ModelState.IsValid)

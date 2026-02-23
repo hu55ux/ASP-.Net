@@ -1,14 +1,14 @@
-﻿using ASP_.NET_InvoiceManagment.Models;
+﻿using ASP_.NET_InvoiceManagementAuth.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-namespace ASP_.NET_InvoiceManagment.Database;
+namespace ASP_.NET_InvoiceManagementAuth.Database;
 
 /// <summary>
 /// The database context for the Invoice Management system.
 /// Handles the configuration and mapping of Customer, Invoice, and InvoiceRow entities.
 /// </summary>
-public class InvoiceManagmentDbContext : DbContext
+public class InvoiceManagmentDbContext : IdentityDbContext<AppUser>
 {
     /// <summary>
     /// Constructor for the InvoiceManagmentDbContext class. It takes 
@@ -35,6 +35,8 @@ public class InvoiceManagmentDbContext : DbContext
     /// </summary>
     public DbSet<InvoiceRow> InvoiceRows => Set<InvoiceRow>();
 
+    public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
+
     /// <summary>
     /// Configures the database schema and entity relationships using Fluent API.
     /// </summary>
@@ -42,7 +44,6 @@ public class InvoiceManagmentDbContext : DbContext
     {
         base.OnModelCreating(modelBuilder);
 
-        // --- Customer Entity Configuration ---
         modelBuilder.Entity<Customer>(customer =>
         {
             customer.HasKey(c => c.Id);
@@ -61,7 +62,6 @@ public class InvoiceManagmentDbContext : DbContext
                 .OnDelete(DeleteBehavior.Restrict);
         });
 
-        // --- Invoice Entity Configuration ---
         modelBuilder.Entity<Invoice>(invoice =>
         {
             invoice.HasKey(i => i.Id);
@@ -87,7 +87,6 @@ public class InvoiceManagmentDbContext : DbContext
                 .OnDelete(DeleteBehavior.Cascade);
         });
 
-        // --- InvoiceRow Entity Configuration ---
         modelBuilder.Entity<InvoiceRow>(row =>
         {
             row.HasKey(row => row.Id);
@@ -107,5 +106,16 @@ public class InvoiceManagmentDbContext : DbContext
                .HasComputedColumnSql("[Quantity] * [Amount]");
 
         });
+
+        modelBuilder.Entity<RefreshToken>(
+            refresh =>
+            {
+                refresh.HasKey(rt => rt.Id);
+                refresh.HasIndex(rt => rt.JwtId).IsUnique();
+                refresh.Property(rt => rt.JwtId).IsRequired().HasMaxLength(64);
+                refresh.Property(rt => rt.UserId).IsRequired().HasMaxLength(64);
+            }
+            );
+
     }
 }

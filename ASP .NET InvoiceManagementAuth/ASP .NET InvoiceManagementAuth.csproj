@@ -4,7 +4,7 @@
 		<TargetFramework>net8.0</TargetFramework>
 		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
-		<RootNamespace>ASP_.NET_InvoiceManagment</RootNamespace>
+		<RootNamespace>ASP_.NET_InvoiceManagementAuth</RootNamespace>
 		<GenerateDocumentationFile>True</GenerateDocumentationFile>
 	</PropertyGroup>
 
@@ -26,6 +26,5 @@
 	<ItemGroup>
 		<Folder Include="SQLQuerys\" />
 	</ItemGroup>
-
 
 </Project>

@@ -1,6 +1,6 @@
-﻿using ASP_.NET_InvoiceManagment.DTOs.Auth;
+﻿using ASP_.NET_InvoiceManagementAuth.DTOs.Auth;
 
-namespace ASP_.NET_InvoiceManagment.Services.Interfaces;
+namespace ASP_.NET_InvoiceManagementAuth.Services.Interfaces;
 
 public interface IAuthService
 {
@@ -18,4 +18,6 @@ public interface IAuthService
     /// <returns>AuthResponseDTO containing the result of the authentication process, 
     /// including user information and any relevant tokens or messages.</returns>
     Task<AuthResponseDTO> LoginUserAsync(LoginRequest request);
+    Task<AuthResponseDTO?> RefreshTokenAsync(RefreshTokenRequest refreshTokenRequest);
+    Task RevokeRefreshTokenAsync(string refreshToken);
 }

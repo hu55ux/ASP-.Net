@@ -1,6 +1,6 @@
-﻿using ASP_.NET_InvoiceManagment.Common;
-using ASP_.NET_InvoiceManagment.DTOs.Auth;
-using ASP_.NET_InvoiceManagment.Services.Interfaces;
+﻿using ASP_.NET_InvoiceManagementAuth.Common;
+using ASP_.NET_InvoiceManagementAuth.DTOs.Auth;
+using ASP_.NET_InvoiceManagementAuth.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 /// <summary>
@@ -43,5 +43,21 @@ public class AuthController : ControllerBase
     {
         var result = await _authService.LoginUserAsync(request);
         return Ok(ApiResponse<AuthResponseDTO>.SuccessResponse(result));
+    }
+
+    [HttpPost("refresh")]
+    public async Task<ActionResult<ApiResponse<AuthResponseDTO>>> Refresh([FromBody] RefreshTokenRequest refreshTokenRequest)
+    {
+        var result = await _authService.RefreshTokenAsync(refreshTokenRequest);
+
+        return Ok(ApiResponse<AuthResponseDTO>.SuccessResponse(result));
+    }
+
+    [HttpPost("revoke")]
+    public async Task<ActionResult> Revoke([FromBody] RefreshTokenRequest refreshTokenRequest)
+    {
+        await _authService.RevokeRefreshTokenAsync(refreshTokenRequest.RefreshToken);
+
+        return Ok(ApiResponse<AuthResponseDTO>.SuccessResponse("Refresh token revoked"));
     }
 }

@@ -4,6 +4,7 @@ using ASP_.NET_InvoiceManagment.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ASP_.NET_InvoiceManagment.Migrations
 {
     [DbContext(typeof(InvoiceManagmentDbContext))]
-    partial class InvoiceManagmentDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260218111507_DatabaseUpdated")]
+    partial class DatabaseUpdated
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
