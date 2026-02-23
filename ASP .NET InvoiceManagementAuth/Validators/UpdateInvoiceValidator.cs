@@ -2,7 +2,7 @@
 using ASP_.NET_InvoiceManagementAuth.Models;
 using FluentValidation;
 
-namespace ASP_.NET_InvoiceManagementAuth.Validators.InvoiceValidators;
+namespace ASP_.NET_InvoiceManagementAuth.Validators;
 
 /// <summary>
 /// Validator for invoice updates, ensuring that at least one attribute is modified 

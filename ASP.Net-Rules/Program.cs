@@ -542,11 +542,55 @@ Bunun üçün biz bir applicationUser classı yaradırıq və bu classımızı I
 role classı yaradırıq və bu classımızı IdentityRole classından törədərək istifadəçi rollarını saxlayırıq.
 
 
+Authentication zamanı məsələn biz bir silmə əməliyyatı etmək istəyirik amma bunu hamı edə bilsə bu zaman səhv olar.
+Bu zaman bizə Roles və Policy -based authorization kömək edir ki, bu da bizim istifadəçilərimizi rollara və ya 
+siyasətlərə əsasən qruplaşdıraraq onlara müəyyən hüquqlar verə bilmək imkanı verir.
+Masalan:
+[Authorize (Roles = "Admin")] - Bu sətr yalnız Admin roluna malik istifadəçilərin bu əməliyyatı yerinə yetirməsinə icazə verir.
+[Authorixe (Policy = "DeletePolicy")] - Bu sətr yalnız DeletePolicy siyasətinə malik istifadəçilərin bu əməliyyatı yerinə yetirməsinə icazə verir.
+Və ya biz Permission-based authorization istifadə edə bilərik ki, bu da bizim istifadəçilərimizi icazələrə əsasən qruplaşdıraraq onlara müəyyən hüquqlar verə bilmək imkanı verir.
+[Authorize(Policy="CanRead")] - Bu sətr yalnız CanRead icazəsinə malik istifadəçilərin bu əməliyyatı yerinə yetirməsinə icazə verir.
+Policy basedolduqda bizim nə qədər role sayımız çox olarsa buda bir o qədər uzun və qarışıq bir kod bazasına səbəb olacaq.
+Amma Permission based olduqda bizim yalnız icazələrimiz olur və bu zaman kod bazamız daha təmiz və strukturlaşdırılmış olur.
+
+
+                                                                        
+                                                                                Claim
+
+
+
+ASP.NET Core Web API-da Claim (İddia), bir istifadəçi haqqında olan konkret bir informasiya parçasıdır. Bunu sadə bir misalla izah edim:
+
+Təsəvvür et ki, sənin bir vəsiqən (Token/Passport) var. Bu vəsiqənin üzərində yazılan hər bir məlumat — adın, doğum tarixin, rolun və ya emailin — bir Claim-dir.
+
+1. Claim Nədir?
+Texniki tərəfdən Claim bir "Key-Value" cütlüyüdür. Məsələn:
+
+Type: "Email", Value: "ali@example.com"
+
+Type: "Role", Value: "Admin"
+
+Type: "DateOfBirth", Value: "1995-01-01"
+
+Bu sistem Identity (Kimlik) və ClaimsPrincipal (Kimliyin sahibi) anlayışları ilə işləyir. 
+Bir istifadəçinin birdən çox kimliyi (məsələn, həm sürücülük vəsiqəsi, həm pasportu) ola bilər və hər birində fərqli claim-lər ola bilər.
+Çeviklik: Sadəcə "Admin/User" rolları ilə məhdudlaşmırsan. Məsələn, "Yaşı 18-dən böyük olanlar" və ya "Bakı filialının işçiləri" kimi spesifik claim-lər yarada bilərsən.
+
+Performans: İstifadəçi haqqında lazım olan kiçik məlumatları (məsələn, ad və ya profil şəkli linki) 
+claim kimi tokenə qoysan, hər dəfə bazaya (DB) müraciət etməyə ehtiyac qalmaz.
+
+Standartlaşma: ClaimTypes sinfi sayəsində dünya standartlarına uyğun identifikatorlar istifadə olunur.
+
+Xülasə
+Claim — istifadəçinin kim olduğu haqqında verilən bir bəyanatdır. ClaimsIdentity bu claim-ləri özündə saxlayan "vəsiqə",
+ClaimsPrincipal isə bu vəsiqələri cibində daşıyan "şəxs"dir (yəni User).
+
 
 
                                                                         JWT(JSON Web Tokens)
 
-JWT (JSON Web Token) müasir veb tətbiqlərdə tərəflər arasında məlumatın təhlükəsiz və yığcam şəkildə ötürülməsi üçün istifadə olunan açıq standartdır (RFC 7519). Əsasən autentifikasiya (istifadəçi girişi) və informasiya mübadiləsi üçün tətbiq edilir.
+JWT (JSON Web Token) müasir veb tətbiqlərdə tərəflər arasında məlumatın təhlükəsiz və yığcam şəkildə ötürülməsi üçün istifadə olunan açıq 
+standartdır (RFC 7519). Əsasən autentifikasiya (istifadəçi girişi) və informasiya mübadiləsi üçün tətbiq edilir.
 
 JWT-nin Açılışı və Strukturu
 JWT nöqtələrlə (.) ayrılmış üç əsas hissədən ibarətdir. Xarici görünüşü adətən belə olur: xxxxx.yyyyy.zzzzz.
@@ -580,10 +624,45 @@ Authorization: Bearer <token>
 
 
 
+                                                                                        Tokens
+
+Tokenlər bizim hər hansı bir API-da müəyyən otaqlara girmək üçün istifadə olunan "açar"lardır. Məsələn, 
+bir veb tətbiqində istifadəçi giriş etdikdə, ona bir token verilir. Bu token, istifadəçinin kim olduğunu və hansı hüquqlara sahib olduğunu göstərir.
+Bu token, istifadəçi hər hansı bir qorunan resursa (məsələn, profil səhifəsi) daxil olmaq istədikdə təqdim edilir. 
+Server bu tokeni yoxlayır və əgər token etibarlıdırsa, istifadəçiyə resursa giriş icazəsi verir.
+
+İki əsas token istifadə olunur bunlar :
+1. Access Token - Bu token, istifadəçinin müəyyən bir resursa giriş icazəsi olduğunu göstərir. Adətən qısa müddətli olur (məsələn, 15 dəqiqə) və istifadəçi hər sorğu göndərdikdə təqdim edilir.
+Bu token Header-da Authorization bölməsində təqdim edilir və server bu tokeni yoxlayır və əgər token etibarlıdırsa, istifadəçiyə resursa giriş icazəsi verir.
+
+2. Refresh Token - Bu token, access tokenin müddəti bitdikdə yeni bir access token almaq üçün istifadə olunur. Adətən uzun müddətli olur (məsələn, 7 gün) və yalnız access tokenin müddəti bitdikdə təqdim edilir.
+Bu token adətən HTTP-only cookie-də saxlanılır və istifadəçi access tokenin müddəti bitdikdə bu tokeni təqdim edir və server yeni bir access token yaradır və geri qaytarır.
+
+Xülasə olaraq tokenlər, istifadəçi kimliyini və hüquqlarını təmsil edən və qorunan resurslara giriş icazəsi verən "açar"lardır. 
+Access token qısa müddətli, refresh token isə uzun müddətli olur və access tokenin müddəti bitdikdə yeni bir access token almaq üçün istifadə olunur.
+
+Refreshtokendə ən çox istifadə olunan üsullardan opaque, JWT və reference token üsullarıdır. Opaque tokenlər, tokenin içində heç bir məlumat saxlamayan və yalnız server tərəfindən tanınan tokenlərdir.
+Adətən sadə proqramlarda opaque tokenlər istifadə olunur. JWT tokenlər, tokenin içində məlumat saxlayan ve imzalanmış tokenlerdir. Adətən daha kompleks proqramlarda JWT tokenler istifadə olunur.
+  
+
+
+                                                                                       RBAC(Resource Based Authorization Control)
+
+Bizim yuxarıda bəhs etdiyimiz Authorization RBAC(Role Based Authorization Control) idi yəni idarəolunma rollara əsaslanırdı. RBAC, istifadəçilərin rollarına əsaslanaraq onlara müəyyən hüquqlar verən bir authorization modelidir.
+İndi isə bir resurslara uyğun idarəolunmaya baxacağıd ki bu da RBAC(Resource Based Authorization Control) adlanır. RBAC-da istifadəçilərə rollar verilir və bu rollar müəyyən resurslara giriş icazəsi verir. Yəni bizim bir manager 
+və o sadəcə hansı invoiceda owner olarsa sadəcə onları idarə edə bilir. Buda bizim daha təhlükəsiz və strukturlaşdırılmış bir authorization modelinə sahib olmamıza kömək edir. Məsələn, bir veb tətbiqində istifadəçi yalnız öz profil
+səhifəsinə daxil ola bilər, amma digər istifadəçilərin profil səhifələrinə daxil ola bilməz. Bu zaman RBAC(Resource Based Authorization Control) modelindən istifadə olunur ki, bu da bizim daha təhlükəsiz və strukturlaşdırılmış bir
+authorization modelinə sahib olmamıza kömək edir.
 
 
 
 
 
-                                                                 
+
+                                                                                        Refactoring 
+
+Refactoring, proqram təminatında mövcud kodun strukturunu və dizaynını dəyişdirmədən onun daxili quruluşunu təkmilləşdirmək üçün istifadə olunan bir prosesdir.
+Refactoring, kodun oxunaqlılığını, təmizliyini və saxlanılabilirliyini artırmaq üçün istifadə olunur. Məsələn, bir metod çox uzun və ya çox kompleks olduqda, onu daha kiçik və daha sadə metodlara bölmək refactoring prosesinə aiddir.
+Və ya biz program.cs-də servicelərimizi və ya digər konfiqurasiyalarımızı daha təmiz və strukturlaşdırılmış bir şəkildə yazmaq üçün refactoring edə bilərik. Refactoring, kodun funksionallığını dəyişdirmədən onun daxili quruluşunu təkmilləşdirmək üçün istifadə olunur.
+
 */

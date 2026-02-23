@@ -1,7 +1,7 @@
 ﻿using ASP_.NET_InvoiceManagementAuth.DTOs.CustomerDTOs;
 using FluentValidation;
 
-namespace ASP_.NET_InvoiceManagementAuth.Validators.CustomerValidators;
+namespace ASP_.NET_InvoiceManagementAuth.Validators;
 
 /// <summary>
 /// Validator for partial customer updates, ensuring that at least one attribute is modified 

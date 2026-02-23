@@ -93,7 +93,14 @@ public class AuthResponseDTO
     public IEnumerable<string> Roles { get; set; } = new List<string>();
 }
 
+/// <summary>
+/// RefreshTokenRequest: This class represents the data transfer object 
+/// (DTO) for requesting a new access token using a refresh token.
+/// </summary>
 public class RefreshTokenRequest
 {
+    /// <summary>
+    /// String property named "RefreshToken" that is used to store the refresh token value.
+    /// </summary>
     public string RefreshToken { get; set; } = string.Empty;
 }
