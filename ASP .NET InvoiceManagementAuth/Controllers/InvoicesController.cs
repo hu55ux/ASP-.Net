@@ -46,7 +46,7 @@ public class InvoicesController : ControllerBase
         var invoices = await _invoiceService.GetPagedAsync(invoiceQuery);
         if (invoices is null) return NotFound(ApiResponse<object?>.ErrorResponse("Invoices not found!"));
 
-        return Ok(ApiResponse<PagedResult<InvoiceResponseDTO>>.SuccessResponse(invoices, "Invoices retrieved successfully!"));
+        return Ok(ApiResponse<PagedResult<InvoiceResponseDTO>>.SuccessResponse(invoices!, "Invoices retrieved successfully!"));
     }
 
     /// <summary>

@@ -632,27 +632,34 @@ Bu token, istifadəçi hər hansı bir qorunan resursa (məsələn, profil səhi
 Server bu tokeni yoxlayır və əgər token etibarlıdırsa, istifadəçiyə resursa giriş icazəsi verir.
 
 İki əsas token istifadə olunur bunlar :
-1. Access Token - Bu token, istifadəçinin müəyyən bir resursa giriş icazəsi olduğunu göstərir. Adətən qısa müddətli olur (məsələn, 15 dəqiqə) və istifadəçi hər sorğu göndərdikdə təqdim edilir.
-Bu token Header-da Authorization bölməsində təqdim edilir və server bu tokeni yoxlayır və əgər token etibarlıdırsa, istifadəçiyə resursa giriş icazəsi verir.
+1. Access Token - Bu token, istifadəçinin müəyyən bir resursa giriş icazəsi olduğunu göstərir. Adətən qısa müddətli olur (məsələn, 15 dəqiqə) və 
+istifadəçi hər sorğu göndərdikdə təqdim edilir. Bu token Header-da Authorization bölməsində təqdim edilir və server bu tokeni yoxlayır və əgər 
+token etibarlıdırsa, istifadəçiyə resursa giriş icazəsi verir.
 
-2. Refresh Token - Bu token, access tokenin müddəti bitdikdə yeni bir access token almaq üçün istifadə olunur. Adətən uzun müddətli olur (məsələn, 7 gün) və yalnız access tokenin müddəti bitdikdə təqdim edilir.
-Bu token adətən HTTP-only cookie-də saxlanılır və istifadəçi access tokenin müddəti bitdikdə bu tokeni təqdim edir və server yeni bir access token yaradır və geri qaytarır.
+2. Refresh Token - Bu token, access tokenin müddəti bitdikdə yeni bir access token almaq üçün istifadə olunur. Adətən uzun müddətli olur (məsələn, 7 gün)
+və yalnız access tokenin müddəti bitdikdə təqdim edilir. Bu token adətən HTTP-only cookie-də saxlanılır və istifadəçi access tokenin müddəti bitdikdə bu 
+tokeni təqdim edir və server yeni bir access token yaradır və geri qaytarır.
 
 Xülasə olaraq tokenlər, istifadəçi kimliyini və hüquqlarını təmsil edən və qorunan resurslara giriş icazəsi verən "açar"lardır. 
 Access token qısa müddətli, refresh token isə uzun müddətli olur və access tokenin müddəti bitdikdə yeni bir access token almaq üçün istifadə olunur.
 
-Refreshtokendə ən çox istifadə olunan üsullardan opaque, JWT və reference token üsullarıdır. Opaque tokenlər, tokenin içində heç bir məlumat saxlamayan və yalnız server tərəfindən tanınan tokenlərdir.
-Adətən sadə proqramlarda opaque tokenlər istifadə olunur. JWT tokenlər, tokenin içində məlumat saxlayan ve imzalanmış tokenlerdir. Adətən daha kompleks proqramlarda JWT tokenler istifadə olunur.
+Refreshtokendə ən çox istifadə olunan üsullardan opaque, JWT və reference token üsullarıdır. Opaque tokenlər, tokenin içində heç bir 
+məlumat saxlamayan və yalnız server tərəfindən tanınan tokenlərdir.
+Adətən sadə proqramlarda opaque tokenlər istifadə olunur. JWT tokenlər, tokenin içində məlumat saxlayan ve imzalanmış tokenlerdir.
+Adətən daha kompleks proqramlarda JWT tokenler istifadə olunur.
   
 
 
                                                                                        RBAC(Resource Based Authorization Control)
 
-Bizim yuxarıda bəhs etdiyimiz Authorization RBAC(Role Based Authorization Control) idi yəni idarəolunma rollara əsaslanırdı. RBAC, istifadəçilərin rollarına əsaslanaraq onlara müəyyən hüquqlar verən bir authorization modelidir.
-İndi isə bir resurslara uyğun idarəolunmaya baxacağıd ki bu da RBAC(Resource Based Authorization Control) adlanır. RBAC-da istifadəçilərə rollar verilir və bu rollar müəyyən resurslara giriş icazəsi verir. Yəni bizim bir manager 
-və o sadəcə hansı invoiceda owner olarsa sadəcə onları idarə edə bilir. Buda bizim daha təhlükəsiz və strukturlaşdırılmış bir authorization modelinə sahib olmamıza kömək edir. Məsələn, bir veb tətbiqində istifadəçi yalnız öz profil
-səhifəsinə daxil ola bilər, amma digər istifadəçilərin profil səhifələrinə daxil ola bilməz. Bu zaman RBAC(Resource Based Authorization Control) modelindən istifadə olunur ki, bu da bizim daha təhlükəsiz və strukturlaşdırılmış bir
-authorization modelinə sahib olmamıza kömək edir.
+Bizim yuxarıda bəhs etdiyimiz Authorization RBAC(Role Based Authorization Control) idi yəni idarəolunma rollara əsaslanırdı. 
+RBAC, istifadəçilərin rollarına əsaslanaraq onlara müəyyən hüquqlar verən bir authorization modelidir. İndi isə bir resurslara 
+uyğun idarəolunmaya baxacağıd ki bu da RBAC(Resource Based Authorization Control) adlanır. RBAC-da istifadəçilərə rollar verilir
+və bu rollar müəyyən resurslara giriş icazəsi verir. Yəni bizim bir manager və o sadəcə hansı invoiceda owner olarsa sadəcə onları 
+idarə edə bilir. Buda bizim daha təhlükəsiz və strukturlaşdırılmış bir authorization modelinə sahib olmamıza kömək edir. 
+Məsələn, bir veb tətbiqində istifadəçi yalnız öz profil səhifəsinə daxil ola bilər, amma digər istifadəçilərin profil səhifələrinə 
+daxil ola bilməz. Bu zaman RBAC(Resource Based Authorization Control) modelindən istifadə olunur ki, bu da bizim daha təhlükəsiz 
+və strukturlaşdırılmış bir authorization modelinə sahib olmamıza kömək edir.
 
 
 
@@ -661,8 +668,76 @@ authorization modelinə sahib olmamıza kömək edir.
 
                                                                                         Refactoring 
 
-Refactoring, proqram təminatında mövcud kodun strukturunu və dizaynını dəyişdirmədən onun daxili quruluşunu təkmilləşdirmək üçün istifadə olunan bir prosesdir.
-Refactoring, kodun oxunaqlılığını, təmizliyini və saxlanılabilirliyini artırmaq üçün istifadə olunur. Məsələn, bir metod çox uzun və ya çox kompleks olduqda, onu daha kiçik və daha sadə metodlara bölmək refactoring prosesinə aiddir.
-Və ya biz program.cs-də servicelərimizi və ya digər konfiqurasiyalarımızı daha təmiz və strukturlaşdırılmış bir şəkildə yazmaq üçün refactoring edə bilərik. Refactoring, kodun funksionallığını dəyişdirmədən onun daxili quruluşunu təkmilləşdirmək üçün istifadə olunur.
+Refactoring, proqram təminatında mövcud kodun strukturunu və dizaynını dəyişdirmədən onun daxili quruluşunu təkmilləşdirmək 
+üçün istifadə olunan bir prosesdir. 
+Refactoring, kodun oxunaqlılığını, təmizliyini və saxlanılabilirliyini artırmaq üçün istifadə olunur. Məsələn, bir metod çox 
+uzun və ya çox kompleks olduqda, onu daha kiçik və daha sadə metodlara bölmək refactoring prosesinə aiddir. Və ya biz program.cs-də 
+servicelərimizi və ya digər konfiqurasiyalarımızı daha təmiz və strukturlaşdırılmış bir şəkildə yazmaq üçün refactoring edə bilərik. 
+Refactoring, kodun funksionallığını dəyişdirmədən onun daxili quruluşunu təkmilləşdirmək üçün istifadə olunur.
+
+
+
+
+
+
+
+                                                                                        Fayllarla işləmə
+
+
+ASP.NET mühitində fayllarla işləmək təkcə məlumatı bazaya yazmaq deyil, həm də serverin yaddaşını (fayl sistemini) idarə etmək deməkdir. 
+Məsələn, bir istifadəçinin profil şəkli və ya CV-si bazada deyil, serverin qovluğunda saxlanılır; bazada isə sadəcə həmin faylın yolu (path) və ya adı saxlanılır.
+
+ASP.NET Core-da faylları qəbul etmək üçün xüsusi bir interfeysdən istifadə olunur: IFormFile. Modelinizdə fayl üçün yer ayırarkən onu mütləq bu tipdə təyin etməlisiniz.
+public class UserProfileViewModel
+{
+    public string FullName { get; set; }
+    public IFormFile ProfilePicture { get; set; } // Faylı burada tuturuq
+}
+
+
+2. Faylın Saxlanma Məntiqi
+Faylları serverdə saxlamaq üçün adətən wwwroot qovluğu (və ya onun daxilindəki uploads qovluğu) seçilir. Proses belə işləyir:
+
+Unikal Ad Verilməsi: Eyni adlı iki faylın bir-birini silməməsi üçün Guid.NewGuid() ilə fayla unikal ad verilir.
+
+Yolun Təyin Edilməsi: Faylın hansı qovluğa düşəcəyi müəyyən edilir.
+
+Yaddaşa Yazılma: FileStream vasitəsilə fayl fiziki olaraq diskə köçürülür.
+
+public async Task<string> UploadFile(IFormFile file)
+{
+    // 1. Qovluğu müəyyən et
+    string uploadFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/uploads");
+    
+    // 2. Unikal fayl adı yarat
+    string fileName = Guid.NewGuid().ToString() + "_" + file.FileName;
+    string filePath = Path.Combine(uploadFolder, fileName);
+
+    // 3. Faylı fiziki olaraq yaddaşa yaz
+    using (var stream = new FileStream(filePath, FileMode.Create))
+    {
+        await file.CopyToAsync(stream);
+    }
+
+    return fileName; // Bazaya yazmaq üçün adını qaytarırıq
+}
+
+3. Niyə Bazada Faylın Özü Yox, Adı Saxlanılır?
+Performans: Verilənlər bazası (SQL) böyük həcmli faylları (məsələn 5MB-lıq şəkil) emal edərkən ləngiyir.
+
+Həcm: Şəkilləri bazada saxlamaq backup (ehtiyat nüsxə) prosesini çox ağırlaşdırır.
+
+Sürət: Serverin fayl sistemi (SSD/HDD) şəkilləri bazadan daha sürətli oxuyur.
+
+Metod,                                  Nə Saxlanılır?,                                     Üstünlüyü
+Verilənlər Bazası                       uploads/my-photo.jpg (string)                      "Sürətli axtarış, yüngül baza."
+Server Yaddaşı                          Şəklin özü (binary data)                             Səliqəli idarəetmə.
+
+
+Təhlükəsizlik: İstifadəçinin .exe və ya .php kimi zərərli fayllar yükləməsinin qarşısını almalısınız (yalnız .jpg, .pdf və s. icazə verilməlidir).
+Həcm Limiti: ASP.NET-də standart yükləmə limiti var, çox böyük fayllar üçün Program.cs hissəsində tənzimləmə edilməlidir.
+
+
+
 
 */
