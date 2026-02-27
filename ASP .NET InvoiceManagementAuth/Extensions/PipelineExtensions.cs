@@ -25,7 +25,7 @@ public static class PipelineExtensions
                 options.SwaggerEndpoint("/swagger/v1/swagger.json", "Invoice Management API v1");
 
                 // Serves Swagger UI at the application's root (e.g., http://localhost:5000/)
-                options.RoutePrefix = string.Empty;
+                //options.RoutePrefix = string.Empty;
 
                 // UI Enhancements
                 options.DisplayRequestDuration();

@@ -1,5 +1,4 @@
-﻿using ASP_.NET_InvoiceManagementAuth.DTOs.CustomerDTOs;
-using ASP_.NET_InvoiceManagementAuth.DTOs.InvoiceDTOs;
+﻿using ASP_.NET_InvoiceManagementAuth.DTOs;
 using ASP_.NET_InvoiceManagementAuth.Models;
 using AutoMapper;
 
@@ -23,7 +22,7 @@ public class MappingProfile : Profile
            )
            .ForMember(
                dest => dest.InvoiceRowsCount,
-               opt => opt.MapFrom(src => src.Rows.Count)
+               opt => opt.MapFrom(src => src.Rows.Count())
            )
            .ForMember(
                 dest => dest.CustomerName,

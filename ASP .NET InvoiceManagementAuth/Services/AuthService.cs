@@ -3,7 +3,7 @@ using System.Security.Claims;
 using System.Text;
 using ASP_.NET_InvoiceManagementAuth.Config;
 using ASP_.NET_InvoiceManagementAuth.Database;
-using ASP_.NET_InvoiceManagementAuth.DTOs.Auth;
+using ASP_.NET_InvoiceManagementAuth.DTOs;
 using ASP_.NET_InvoiceManagementAuth.Models;
 using ASP_.NET_InvoiceManagementAuth.Services.Interfaces;
 using Microsoft.AspNetCore.Identity;

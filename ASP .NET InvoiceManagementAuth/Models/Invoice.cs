@@ -37,7 +37,7 @@ public class Invoice
     /// <summary>
     /// Collection of individual line items within the invoice.
     /// </summary>
-    public ICollection<InvoiceRow> Rows { get; set; } = new List<InvoiceRow>();
+    public IEnumerable<InvoiceRow> Rows { get; set; } = new List<InvoiceRow>();
 
     /// <summary>
     /// Total calculated amount for all invoice rows.
@@ -71,6 +71,10 @@ public class Invoice
     /// Timestamp for soft deletion. If populated, the invoice is considered archived.
     /// </summary>
     public DateTimeOffset? DeletedAt { get; set; }
+    /// <summary>
+    /// Collection of supporting documents or files associated with this invoice.
+    /// </summary>
+    public virtual ICollection<InvoiceAttachment> Attachments { get; set; } = new List<InvoiceAttachment>();
 }
 
 /// <summary>

@@ -1,4 +1,4 @@
-﻿using ASP_.NET_InvoiceManagementAuth.DTOs.InvoiceDTOs;
+﻿using ASP_.NET_InvoiceManagementAuth.DTOs;
 using ASP_.NET_InvoiceManagementAuth.Models;
 using FluentValidation;
 

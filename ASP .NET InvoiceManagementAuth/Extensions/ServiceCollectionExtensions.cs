@@ -5,6 +5,7 @@ using ASP_.NET_InvoiceManagementAuth.Mapping;
 using ASP_.NET_InvoiceManagementAuth.Models;
 using ASP_.NET_InvoiceManagementAuth.Services;
 using ASP_.NET_InvoiceManagementAuth.Services.Interfaces;
+using ASP_NET_19._TaskFlow_Files.Storage;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -176,6 +177,8 @@ public static class ServiceCollectionExtensions
         services.AddScoped<I_InvoiceService, InvoiceService>();
         services.AddScoped<ICustomerService, CustomerService>();
         services.AddScoped<IAuthService, AuthService>();
+        services.AddScoped<IFileStorage, LocalDiskStorage>();
+        services.AddScoped<IAttachmentService, AttachmentService>();
 
         return services;
     }

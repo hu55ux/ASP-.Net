@@ -1,5 +1,5 @@
 ﻿using ASP_.NET_InvoiceManagementAuth.Common;
-using ASP_.NET_InvoiceManagementAuth.DTOs.InvoiceDTOs;
+using ASP_.NET_InvoiceManagementAuth.DTOs;
 using ASP_.NET_InvoiceManagementAuth.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
@@ -130,5 +130,18 @@ public class InvoicesController : ControllerBase
         if (!isDeleted) return NotFound($"Invoice with ID: {id} not found or cannot be deleted.");
 
         return NoContent();
+    }
+
+    [HttpGet("{id}/download")]
+    public async Task<ActionResult> DownloadInvoice(Guid id, [FromQuery] string format = "pdf")
+    {
+        var result = await _invoiceService.ExportInvoiceAsync(id, format);
+        if (result == null)
+            return NotFound(new { Message = $"Invoice with ID {id} not found." });
+        return File(
+            result.Value.Content,
+            result.Value.ContentType,
+            result.Value.FileName
+            );
     }
 }

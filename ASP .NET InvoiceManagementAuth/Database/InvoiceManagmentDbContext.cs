@@ -37,6 +37,12 @@ public class InvoiceManagmentDbContext : IdentityDbContext<AppUser>
     /// Gets or sets the RefreshTokens collection. Manages security sessions and long-lived authentication logic.
     /// </summary>
     public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
+    
+    /// <summary>
+    /// Gets or sets the Attachments collection. 
+    /// Stores metadata for files linked to specific invoices.
+    /// </summary>
+    public DbSet<InvoiceAttachment> Attachments => Set<InvoiceAttachment>();
 
     /// <summary>
     /// Configures the database schema using the Fluent API.
@@ -120,5 +126,44 @@ public class InvoiceManagmentDbContext : IdentityDbContext<AppUser>
             refresh.Property(rt => rt.JwtId).IsRequired().HasMaxLength(128);
             refresh.Property(rt => rt.UserId).IsRequired().HasMaxLength(128);
         });
+
+        modelBuilder.Entity<InvoiceAttachment>(
+            attachment =>
+            {
+                attachment.HasKey(ta => ta.Id);
+
+                attachment
+                    .Property(ta => ta.OriginalFileName)
+                    .IsRequired()
+                    .HasMaxLength(500);
+
+                attachment
+                    .Property(ta => ta.StoredFileName)
+                    .IsRequired()
+                    .HasMaxLength(100);
+
+                attachment
+                    .Property(ta => ta.ContentType)
+                    .IsRequired()
+                    .HasMaxLength(200);
+
+                attachment
+                    .Property(ta => ta.UploadedUserId)
+                    .IsRequired()
+                    .HasMaxLength(450);
+
+                attachment
+                    .HasOne(ta => ta.Invoice)
+                    .WithMany(t => t.Attachments)
+                    .HasForeignKey(ta => ta.InvoiceId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                attachment
+                    .HasOne(ta => ta.UploadedUser)
+                    .WithMany()
+                    .HasForeignKey(ta => ta.UploadedUserId)
+                    .OnDelete(DeleteBehavior.Restrict);
+            }
+            );
     }
 }

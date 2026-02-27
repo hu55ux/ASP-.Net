@@ -1,6 +1,7 @@
 ﻿using ASP_.Net_07_HW.Data;
 using ASP_.Net_07_HW.Models;
 using ASP_.Net_07_HW.Services.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 public class TaskItemService : ITaskItemService
 {

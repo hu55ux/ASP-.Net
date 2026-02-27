@@ -41,13 +41,13 @@ public class PagedResult<T>
         => Page < TotalPages;
 
     /// <summary>
-    /// Creates a new instance of PagedResult<T> with the specified items, page number, page size, and total count.
+    /// Creates a new instance of PagedResult&lt;T&gt; with the specified items, page number, page size, and total count.
     /// </summary>
-    /// <param name="items"></param>
-    /// <param name="page"></param>
-    /// <param name="pageSize"></param>
-    /// <param name="totalCount"></param>
-    /// <returns></returns>
+    /// <param name="items">The collection of items for the current page.</param>
+    /// <param name="page">The current page number.</param>
+    /// <param name="pageSize">The size of the page.</param>
+    /// <param name="totalCount">The total number of items matching the query.</param>
+    /// <returns>A new instance of <see cref="PagedResult{T}"/>.</returns>
     public static PagedResult<T> Create(
                                     IEnumerable<T> items,
                                     int page,
@@ -62,6 +62,4 @@ public class PagedResult<T>
             TotalCount = totalCount
         };
     }
-
-
 }

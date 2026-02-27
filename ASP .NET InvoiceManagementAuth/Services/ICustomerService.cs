@@ -1,5 +1,5 @@
 ﻿using ASP_.NET_InvoiceManagementAuth.Common;
-using ASP_.NET_InvoiceManagementAuth.DTOs.CustomerDTOs;
+using ASP_.NET_InvoiceManagementAuth.DTOs;
 using ASP_.NET_InvoiceManagementAuth.Models;
 
 namespace ASP_.NET_InvoiceManagementAuth.Services.Interfaces;
@@ -66,4 +66,12 @@ public interface ICustomerService
     /// <param name="customer">The customer entity to check.</param>
     /// <returns>True if the customer has at least one invoice; otherwise, false.</returns>
     bool HasInvoice(Customer customer);
+
+    /// <summary>
+    /// Gets the customer entity by its unique identifier, with an option to include archived (soft-deleted) customers in the search.
+    /// </summary>
+    /// <param name="id"></param>
+    /// <param name="includeDeleted"></param>
+    /// <returns></returns>
+    Task<Customer?> GetCustomerEntityAsync(Guid id, bool includeDeleted = false);
 }

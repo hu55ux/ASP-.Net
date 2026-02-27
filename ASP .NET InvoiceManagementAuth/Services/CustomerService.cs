@@ -1,6 +1,6 @@
 ﻿using ASP_.NET_InvoiceManagementAuth.Common;
 using ASP_.NET_InvoiceManagementAuth.Database;
-using ASP_.NET_InvoiceManagementAuth.DTOs.CustomerDTOs;
+using ASP_.NET_InvoiceManagementAuth.DTOs;
 using ASP_.NET_InvoiceManagementAuth.Models;
 using ASP_.NET_InvoiceManagementAuth.Services.Interfaces;
 using AutoMapper;
@@ -206,5 +206,12 @@ public class CustomerService : ICustomerService
             "createdat" => isDescending ? query.OrderByDescending(c => c.CreatedAt) : query.OrderBy(c => c.CreatedAt),
             _ => query.OrderByDescending(c => c.Name)
         };
+    }
+
+    public async Task<Customer?> GetCustomerEntityAsync(Guid id, bool includeDeleted = false)
+    {
+        return await _dbContext.Customers
+            .Include(c => c.Invoices)
+            .FirstOrDefaultAsync(c => c.Id == id && (includeDeleted || c.DeletedAt == null));
     }
 }

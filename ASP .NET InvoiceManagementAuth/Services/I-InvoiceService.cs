@@ -1,5 +1,5 @@
 ﻿using ASP_.NET_InvoiceManagementAuth.Common;
-using ASP_.NET_InvoiceManagementAuth.DTOs.InvoiceDTOs;
+using ASP_.NET_InvoiceManagementAuth.DTOs;
 using ASP_.NET_InvoiceManagementAuth.Models;
 
 namespace ASP_.NET_InvoiceManagementAuth.Services.Interfaces;
@@ -75,4 +75,19 @@ public interface I_InvoiceService
     /// <param name="invoice">The invoice entity to check.</param>
     /// <returns>True if the status is not 'Created'; otherwise, false.</returns>
     bool IsSent(Invoice invoice);
+
+    /// <summary>
+    /// Gets the invoice entity by its identifier, including related data such as customer and invoice rows.
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns>
+    Task<Invoice?> GetInvoiceEntityAsync(Guid id);
+
+    /// <summary>
+    /// Exports the specified invoice in the requested format (e.g., PDF, Excel) and returns the file content along with metadata.
+    /// </summary>
+    /// <param name="id"></param>
+    /// <param name="format"></param>
+    /// <returns></returns>
+    Task<(byte[] Content, string FileName, string ContentType)?> ExportInvoiceAsync(Guid id, string format);
 }

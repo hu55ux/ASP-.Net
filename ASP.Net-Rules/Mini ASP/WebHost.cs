@@ -31,10 +31,4 @@ public class WebHost
         _handler.Invoke(context);
     }
 
-    public void UseStartup<T>() where T : IStartup, new()
-    {
-        IStartup startup = new T();
-        startup.Configure(_builder);
-        _handler = _builder.Build();
-    }
 }

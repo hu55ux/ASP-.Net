@@ -1,4 +1,4 @@
-﻿using ASP_.NET_InvoiceManagementAuth.DTOs.CustomerDTOs;
+﻿using ASP_.NET_InvoiceManagementAuth.DTOs;
 using FluentValidation;
 
 namespace ASP_.NET_InvoiceManagementAuth.Validators;

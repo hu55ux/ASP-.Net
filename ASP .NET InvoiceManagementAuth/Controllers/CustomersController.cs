@@ -1,5 +1,5 @@
 ﻿using ASP_.NET_InvoiceManagementAuth.Common;
-using ASP_.NET_InvoiceManagementAuth.DTOs.CustomerDTOs;
+using ASP_.NET_InvoiceManagementAuth.DTOs;
 using ASP_.NET_InvoiceManagementAuth.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

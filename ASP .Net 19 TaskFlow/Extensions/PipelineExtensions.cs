@@ -1,0 +1,49 @@
+﻿using ASP_.Net_19_TaskFlow.Data;
+using ASP_.Net_19_TaskFlow.Middleware;
+
+namespace ASP_.Net_19_TaskFlow.Extensions;
+
+public static class PipelineExtensions
+{
+
+    public static WebApplication UseTaskFlowPiplene(
+        this WebApplication app
+        )
+    {
+        if (app.Environment.IsDevelopment())
+        {
+            app.UseSwagger();
+            app.UseSwaggerUI(
+                options =>
+                {
+                    options.SwaggerEndpoint("/swagger/v1/swagger.json", "TaskFlow API v1");
+                    options.RoutePrefix = string.Empty;
+                    options.DisplayRequestDuration();
+                    options.EnableFilter();
+                    options.EnableDeepLinking();
+                    options.EnableTryItOutByDefault();
+                    options.EnablePersistAuthorization();
+                }
+                );
+        }
+        app.UseMiddleware<GlobalExceptionMiddleware>();
+        
+        app.UseCors();
+
+        app.UseAuthentication();
+
+        app.UseAuthorization();
+
+        app.MapControllers();
+
+        return app;
+    }
+    public static async Task EnsureRolesSeededAsync(
+        this WebApplication app)
+    {
+        using var scope = app.Services.CreateScope();
+        await RoleSeeder.SeedRolesAsync(scope.ServiceProvider);
+    }
+}
+
+
