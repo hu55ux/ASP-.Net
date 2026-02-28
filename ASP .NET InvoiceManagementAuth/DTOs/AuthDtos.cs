@@ -1,4 +1,6 @@
-﻿namespace ASP_.NET_InvoiceManagementAuth.DTOs;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace ASP_.NET_InvoiceManagementAuth.DTOs;
 
 /// <summary>
 /// RegisterRequest: This class represents the data transfer object (DTO) for user registration.
@@ -30,6 +32,16 @@ public class RegisterRequest
     /// </summary>
     /// <example>Pass123</example>
     public string ConfirmedPassword { get; set; } = string.Empty;
+
+    /// <summary>
+    /// This property is used to store the contact phone number of the user during registration.
+    /// </summary>
+    public string PhoneNumber { get; set; } = string.Empty;
+
+    /// <summary>
+    /// This property is used to store the physical address of the user during registration.
+    /// </summary>
+    public string Address { get; set; } = string.Empty;
 }
 
 
@@ -81,10 +93,30 @@ public class AuthResponseDTO
     public DateTimeOffset RefreshTokenExpiresAt { get; set; }
 
     /// <summary>
-    /// User Email
+    /// User's email address. This property is used to store the email address of the authenticated user, which can be displayed in the user interface or used for personalization purposes after successful authentication.
     /// </summary>
     /// <example>john@doe.com</example>
     public string Email { get; set; } = string.Empty;
+
+    /// <summary>
+    /// First name of the user. This property is used to store the user's first name, which can be displayed in the user interface or used for personalization purposes after successful authentication.
+    /// </summary>
+    public string FirstName { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Last name of the user. This property is used to store the user's last name, which can be displayed in the user interface or used for personalization purposes after successful authentication.
+    /// </summary>
+    public string LastName { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Address of the user. This property is used to store the user's physical address, which can be displayed in the user interface or used for personalization purposes after successful authentication.
+    /// </summary>
+    public string Address { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Phone number of the user. This property is used to store the user's contact phone number, which can be displayed in the user interface or used for personalization purposes after successful authentication.
+    /// </summary>
+    public string PhoneNumber { get; set; } = string.Empty;
 
     /// <summary>
     /// Roles of the user. This property is a collection of 
@@ -103,4 +135,63 @@ public class RefreshTokenRequest
     /// String property named "RefreshToken" that is used to store the refresh token value.
     /// </summary>
     public string RefreshToken { get; set; } = string.Empty;
+}
+
+/// <summary>
+/// Represents a request to update user profile information.
+/// </summary>
+public class ProfileEditRequest
+{
+    /// <summary>
+    /// The new full name of the user.
+    /// </summary>
+    /// <example>John Doe</example>
+    public string FirstName { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Last name of the user. This property is used to store the user's last name, which can be displayed in the user interface or used for personalization purposes after successful authentication.
+    /// </summary>
+    public string LastName { get; set; } = string.Empty;
+
+    /// <summary>
+    /// The new physical address of the user.
+    /// </summary>
+    /// <example>123 Main St, New York, NY</example>
+    public string Address { get; set; } = string.Empty;
+
+    /// <summary>
+    /// The new primary email address for the user account.
+    /// </summary>
+    /// <example>john.doe@example.com</example>
+    public string Email { get; set; } = string.Empty;
+
+    /// <summary>
+    /// The new contact phone number of the user.
+    /// </summary>
+    /// <example>+1234567890</example>
+    public string PhoneNumber { get; set; } = string.Empty;
+}
+
+/// <summary>
+/// Represents a request to change the current user's password.
+/// </summary>
+public class ChangePasswordRequest
+{
+    /// <summary>
+    /// The user's current password for security verification.
+    /// </summary>
+    /// <example>OldP@ssw0rd123</example>
+    public string CurrentPassword { get; set; } = string.Empty;
+
+    /// <summary>
+    /// The new password that the user wants to set.
+    /// </summary>
+    /// <example>NewSecur3P@ss!</example>
+    public string NewPassword { get; set; } = string.Empty;
+
+    /// <summary>
+    /// A confirmation of the new password to ensure it was typed correctly.
+    /// </summary>
+    /// <example>NewSecur3P@ss!</example>
+    public string ConfirmNewPassword { get; set; } = string.Empty;
 }

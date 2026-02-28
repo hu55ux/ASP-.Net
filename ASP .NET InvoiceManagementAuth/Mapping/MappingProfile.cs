@@ -106,7 +106,39 @@ public class MappingProfile : Profile
                 opt => opt.MapFrom(_ => DateTimeOffset.UtcNow)
               );
 
+        CreateMap<ProfileEditRequest, AppUser>()
+            .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email))
+            .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.Email))
+            .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.PhoneNumber))
+            .ForMember(dest => dest.FirstName, opt => opt.MapFrom(src => src.FirstName))
+            .ForMember(dest => dest.LastName, opt => opt.MapFrom(src => src.LastName))
+            .ForMember(dest => dest.Address, opt => opt.MapFrom(src => src.Address))
+            .ForMember(dest => dest.UpdatedAt, opt => opt.MapFrom(_ => DateTimeOffset.UtcNow))
+            .ForMember(dest => dest.CreatedAt, opt => opt.Ignore())
+            .ForMember(dest => dest.PasswordHash, opt => opt.Ignore())
+            .ForMember(dest => dest.SecurityStamp, opt => opt.Ignore())
+            .ForMember(dest => dest.ConcurrencyStamp, opt => opt.Ignore())
+            .ForAllMembers(opt => opt.Condition((src, dest, sourceMember) => sourceMember != null));
 
+        CreateMap<ProfileEditRequest, AuthResponseDTO>()
+            .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email))
+            .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.PhoneNumber))
+            .ForMember(dest => dest.FirstName, opt => opt.MapFrom(src => src.FirstName))
+            .ForMember(dest => dest.LastName, opt => opt.MapFrom(src => src.LastName))
+            .ForMember(dest => dest.Address, opt => opt.MapFrom(src => src.Address))
+            .ForAllMembers(opt => opt.Condition((src, dest, sourceMember) => sourceMember != null));
+
+        CreateMap<AppUser, AuthResponseDTO>()
+            .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email ?? string.Empty))
+            .ForMember(dest => dest.FirstName, opt => opt.MapFrom(src => src.FirstName ?? string.Empty))
+            .ForMember(dest => dest.LastName, opt => opt.MapFrom(src => src.LastName ?? string.Empty))
+            .ForMember(dest => dest.Address, opt => opt.MapFrom(src => src.Address ?? string.Empty))
+            .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.PhoneNumber ?? string.Empty))
+            .ForMember(dest => dest.AccessToken, opt => opt.Ignore())
+            .ForMember(dest => dest.RefreshToken, opt => opt.Ignore())
+            .ForMember(dest => dest.ExpiresAt, opt => opt.Ignore())
+            .ForMember(dest => dest.RefreshTokenExpiresAt, opt => opt.Ignore())
+            .ForMember(dest => dest.Roles, opt => opt.Ignore());
     }
 
 

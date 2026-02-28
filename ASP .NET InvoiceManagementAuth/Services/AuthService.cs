@@ -6,6 +6,7 @@ using ASP_.NET_InvoiceManagementAuth.Database;
 using ASP_.NET_InvoiceManagementAuth.DTOs;
 using ASP_.NET_InvoiceManagementAuth.Models;
 using ASP_.NET_InvoiceManagementAuth.Services.Interfaces;
+using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
@@ -22,23 +23,31 @@ public class AuthService : IAuthService
 
     private const string RefreshTokenType = "refresh";
     private readonly UserManager<AppUser> _userManager;
+    private readonly RoleManager<IdentityRole> _roleManager;
     private readonly InvoiceManagmentDbContext _context;
     private readonly JwtConfig _config;
+    private readonly IMapper _mapper;
 
     /// <summary>
     /// Constructor for AuthService, utilizing dependency injection to receive necessary services.
     /// </summary>
     /// <param name="userManager"></param>
-    /// <param name="configuration"></param>
     /// <param name="context"></param>
+    /// <param name="config"></param>
+    /// <param name="mapper"></param>
+    /// <param name="roleManager"></param>
     public AuthService(
         UserManager<AppUser> userManager,
         InvoiceManagmentDbContext context,
-        IOptions<JwtConfig> config)
+        IOptions<JwtConfig> config,
+        IMapper mapper,
+        RoleManager<IdentityRole> roleManager)
     {
         _userManager = userManager;
         _context = context;
         _config = config.Value;
+        _mapper = mapper;
+        _roleManager = roleManager;
     }
 
 
@@ -76,20 +85,25 @@ public class AuthService : IAuthService
     {
         var accessToken = await GenerateAccessTokenAsync(user, _config.ExpirationMinutes);
         var (refreshEntity, refreshjwt) = await CreateRefreshTokenJwtAsync(user.Id, _config.RefreshTokenExpirationDays);
-
         var roles = await _userManager.GetRolesAsync(user);
 
-        return new AuthResponseDTO
-        {
-            AccessToken = accessToken,
-            ExpiresAt = DateTime.UtcNow.AddMinutes(_config.ExpirationMinutes),
-            RefreshToken = refreshjwt,
-            RefreshTokenExpiresAt = refreshEntity.ExpiresAt,
-            Email = user.Email ?? string.Empty,
-            Roles = roles
-        };
+        var response = _mapper.Map<AuthResponseDTO>(user);
+
+        response.AccessToken = accessToken;
+        response.RefreshToken = refreshjwt;
+        response.ExpiresAt = DateTime.UtcNow.AddMinutes(_config.ExpirationMinutes);
+        response.RefreshTokenExpiresAt = refreshEntity.ExpiresAt;
+        response.Roles = roles.ToList();
+
+        return response;
     }
 
+    /// <summary>
+    /// Creates a refresh token JWT for a specific user, storing the token's unique identifier (JTI) and expiration in the database for later validation and revocation.
+    /// </summary>
+    /// <param name="userId"></param>
+    /// <param name="expirationDays"></param>
+    /// <returns></returns>
     private async Task<(RefreshToken entity, string jwt)> CreateRefreshTokenJwtAsync(string userId, int expirationDays)
     {
         var jti = Guid.NewGuid().ToString();
@@ -128,6 +142,12 @@ public class AuthService : IAuthService
         return (entity, jwtString);
     }
 
+    /// <summary>
+    /// Generates a JWT access token for the specified user, embedding necessary claims such as user ID, email, and roles, and signing it with the configured secret key.
+    /// </summary>
+    /// <param name="user"></param>
+    /// <param name="accessExpirationMinutes"></param>
+    /// <returns></returns>
     private async Task<string> GenerateAccessTokenAsync(AppUser user, int accessExpirationMinutes)
     {
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config.SecretKey));
@@ -156,6 +176,12 @@ public class AuthService : IAuthService
         return new JwtSecurityTokenHandler().WriteToken(token);
     }
 
+    /// <summary>
+    /// Refreshes the access token using a valid refresh token, ensuring the refresh token is active and belongs to the correct user before generating new tokens.
+    /// </summary>
+    /// <param name="refreshTokenRequest"></param>
+    /// <returns></returns>
+    /// <exception cref="UnauthorizedAccessException"></exception>
     public async Task<AuthResponseDTO?> RefreshTokenAsync(RefreshTokenRequest refreshTokenRequest)
     {
         var (principal, jti) = ValidateRefreshJwtAndGetJti(refreshTokenRequest.RefreshToken);
@@ -186,7 +212,13 @@ public class AuthService : IAuthService
         return newTokens;
     }
 
-
+    /// <summary>
+    /// Validates the provided refresh token JWT, ensuring it is well-formed, signed with the correct key, and contains the expected claims.
+    /// </summary>
+    /// <param name="refreshToken"></param>
+    /// <param name="validateLifetime"></param>
+    /// <returns></returns>
+    /// <exception cref="UnauthorizedAccessException"></exception>
     private (ClaimsPrincipal principal, string jti) ValidateRefreshJwtAndGetJti(string refreshToken, bool validateLifetime = true)
     {
         var handler = new JwtSecurityTokenHandler();
@@ -243,6 +275,8 @@ public class AuthService : IAuthService
             Email = request.Email,
             FirstName = request.FirstName,
             LastName = request.LastName,
+            PhoneNumber = request.PhoneNumber,
+            Address = request.Address,
             CreatedAt = DateTimeOffset.UtcNow,
             UpdatedAt = null
         };
@@ -252,10 +286,22 @@ public class AuthService : IAuthService
         if (!result.Succeeded)
             throw new InvalidOperationException($"User creation failed: {string.Join(", ", result.Errors.Select(e => e.Description))}");
 
-        await _userManager.AddToRoleAsync(user, "User");
+        const string defaultRole = "User";
+
+        if (!await _roleManager.RoleExistsAsync(defaultRole))
+        {
+            await _roleManager.CreateAsync(new IdentityRole(defaultRole));
+        }
+        await _userManager.AddToRoleAsync(user, defaultRole);
+
         return await GenerateTokensAsync(user);
     }
 
+    /// <summary>
+    /// Revokes a refresh token, marking it as inactive and preventing any future use for obtaining new access tokens.
+    /// </summary>
+    /// <param name="refreshToken"></param>
+    /// <returns></returns>
     public async Task RevokeRefreshTokenAsync(string refreshToken)
     {
         string? jti;
@@ -276,6 +322,11 @@ public class AuthService : IAuthService
         await _context.SaveChangesAsync();
     }
 
+    /// <summary>
+    /// Gets the JTI (JWT ID) claim value from a refresh token without validating its lifetime.
+    /// </summary>
+    /// <param name="refreshJwt"></param>
+    /// <returns></returns>
     private static string GetJtiFromRefreshToken(string refreshJwt)
     {
         var handler = new JwtSecurityTokenHandler();
@@ -285,4 +336,70 @@ public class AuthService : IAuthService
         return jwt.Claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Jti)?.Value ?? string.Empty;
     }
 
+    /// <summary>
+    /// Updates the profile information of an existing user.
+    /// </summary>
+    /// <remarks>
+    /// This method maps the <see cref="ProfileEditRequest"/> to the <see cref="AppUser"/> entity,
+    /// performs the update via Identity UserManager, and returns a new set of tokens 
+    /// to reflect any changes in user claims (e.g., Email or Name).
+    /// </remarks>
+    /// <param name="id"></param>
+    /// <param name="request">The object containing updated user profile data.</param>
+    /// <returns>An <see cref="AuthResponseDTO"/> containing the updated user details and new session tokens.</returns>
+    /// <exception cref="InvalidOperationException">Thrown if the user is not found or the update process fails.</exception>
+    public async Task<AuthResponseDTO> EditOwnProfileAsync(Guid id, ProfileEditRequest request)
+    {
+        var user = await _userManager.FindByIdAsync(id.ToString());
+        if (user is null)
+            throw new InvalidOperationException("User not found.");
+
+        _mapper.Map(request, user);
+
+        var result = await _userManager.UpdateAsync(user);
+        if (!result.Succeeded)
+        {
+            var errors = string.Join(", ", result.Errors.Select(e => e.Description));
+            throw new InvalidOperationException($"Profile update failed: {errors}");
+        }
+
+        return await GenerateTokensAsync(user);
+    }
+
+    /// <summary>
+    /// Changes the password for a specific user after verifying the current password.
+    /// </summary>
+    /// <remarks>
+    /// The process involves:
+    /// 1. Verifying the current password.
+    /// 2. Validating the new password against Identity security policies.
+    /// 3. Updating the security stamp to invalidate old sessions.
+    /// 4. Generating new authentication tokens.
+    /// </remarks>
+    /// <param name="id"></param>
+    /// <param name="request">The request containing current password, new password, and confirmation.</param>
+    /// <returns>An <see cref="AuthResponseDTO"/> with new session tokens.</returns>
+    /// <exception cref="InvalidOperationException">Thrown if the user is not found or the password change is rejected by Identity.</exception>
+    public async Task<AuthResponseDTO> ChangePasswordAsync(Guid id, ChangePasswordRequest request)
+    {
+        var user = await _userManager.FindByIdAsync(id.ToString());
+        if (user is null)
+            throw new InvalidOperationException("User not found.");
+
+        var checkCurrentPassword = await _userManager.CheckPasswordAsync(user, request.CurrentPassword);
+        if (!checkCurrentPassword)
+        {
+            throw new InvalidOperationException("CheckPasswordAsync failed: Current password is wrong.");
+        }
+
+        var result = await _userManager.ChangePasswordAsync(user, request.CurrentPassword, request.NewPassword);
+
+        if (!result.Succeeded)
+        {
+            var errors = string.Join(", ", result.Errors.Select(e => e.Description));
+            throw new InvalidOperationException($"Identity error: {errors}");
+        }
+
+        return await GenerateTokensAsync(user);
+    }
 }

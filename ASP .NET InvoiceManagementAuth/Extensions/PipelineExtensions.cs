@@ -1,4 +1,5 @@
-﻿using ASP_.NET_InvoiceManagementAuth.Middleware;
+﻿using ASP_.NET_InvoiceManagementAuth.Database;
+using ASP_.NET_InvoiceManagementAuth.Middleware;
 
 namespace ASP_.NET_InvoiceManagementAuth.Extensions;
 
@@ -15,43 +16,34 @@ public static class PipelineExtensions
     /// <returns>The configured <see cref="WebApplication"/> instance.</returns>
     public static WebApplication UseInvoiceManagementPipeline(this WebApplication app)
     {
-        // 1. Development Environment Configuration
         if (app.Environment.IsDevelopment())
         {
             app.UseSwagger();
             app.UseSwaggerUI(options =>
             {
-                // Sets the Swagger JSON endpoint
                 options.SwaggerEndpoint("/swagger/v1/swagger.json", "Invoice Management API v1");
-
-                // Serves Swagger UI at the application's root (e.g., http://localhost:5000/)
-                //options.RoutePrefix = string.Empty;
-
-                // UI Enhancements
                 options.DisplayRequestDuration();
                 options.EnableFilter();
                 options.EnableDeepLinking();
                 options.EnableTryItOutByDefault();
-                options.EnablePersistAuthorization(); // Keeps JWT token after page refresh
+                options.EnablePersistAuthorization();
             });
         }
 
-        // 2. Global Error Handling
-        /// <summary>
-        /// Custom middleware to catch all unhandled exceptions and return a consistent JSON response.
-        /// This should be placed early in the pipeline to catch errors from subsequent layers.
-        /// </summary>
         app.UseMiddleware<GlobalExceptionMiddleware>();
 
-        // 3. Security Middlewares
-        // Order is critical here: Authentication must come before Authorization.
         app.UseAuthentication();
         app.UseAuthorization();
 
-        // 4. Endpoint Mapping
-        // Maps Controller actions to their respective routes.
+        using (var scope = app.Services.CreateScope())
+        {
+            RoleSeeder.SeedRolesAsync(scope.ServiceProvider).GetAwaiter().GetResult();
+        }
         app.MapControllers();
 
         return app;
     }
+
 }
+
+

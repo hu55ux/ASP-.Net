@@ -36,4 +36,22 @@ public interface IAuthService
     /// <param name="refreshToken">The unique token string to be invalidated in the database.</param>
     /// <returns>A task representing the asynchronous operation.</returns>
     Task RevokeRefreshTokenAsync(string refreshToken);
+
+    /// <summary>
+    /// Updates the profile information of the currently authenticated user.
+    /// </summary>
+    /// <param name="id"></param>
+    /// <param name="request">The object containing updated profile details such as name, email, and contact info.</param>
+    /// <returns>A <see cref="AuthResponseDTO"/> containing the updated user details and potentially a refreshed authentication token.</returns>
+    /// <exception cref="ArgumentException">Thrown if the provided email is already in use by another account.</exception>
+    Task<AuthResponseDTO> EditOwnProfileAsync(Guid id, ProfileEditRequest request);
+
+    /// <summary>
+    /// Updates the password for the currently authenticated user after verifying their current password.
+    /// </summary>
+    /// <param name="id"></param>
+    /// <param name="request">The object containing the current password, new password, and password confirmation.</param>
+    /// <returns>A <see cref="AuthResponseDTO"/> indicating the result of the password change operation.</returns>
+    /// <exception cref="UnauthorizedAccessException">Thrown if the current password provided in the request is incorrect.</exception>
+    Task<AuthResponseDTO> ChangePasswordAsync(Guid id, ChangePasswordRequest request);
 }

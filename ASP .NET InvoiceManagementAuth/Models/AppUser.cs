@@ -20,6 +20,11 @@ public class AppUser : IdentityUser
     public string LastName { get; set; } = string.Empty;
 
     /// <summary>
+    /// Additional contact information for the user, such as a physical address or mailing address.
+    /// </summary>
+    public string Address { get; set; } = string.Empty;
+
+    /// <summary>
     /// Gets or sets the date and time when the user account was created.
     /// Defaults to the current UTC time.
     /// </summary>
