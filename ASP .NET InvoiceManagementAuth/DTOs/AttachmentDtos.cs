@@ -9,7 +9,7 @@ public class AttachmentResponseDto
     /// <summary>
     /// The unique identifier of the attachment in the database.
     /// </summary>
-    public int Id { get; set; }
+    public Guid Id { get; set; }
 
     /// <summary>
     /// The ID of the task this attachment is associated with.

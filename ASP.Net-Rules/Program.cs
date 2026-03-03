@@ -731,11 +731,87 @@ Sürət: Serverin fayl sistemi (SSD/HDD) şəkilləri bazadan daha sürətli oxu
 
 Metod,                                  Nə Saxlanılır?,                                     Üstünlüyü
 Verilənlər Bazası                       uploads/my-photo.jpg (string)                      "Sürətli axtarış, yüngül baza."
-Server Yaddaşı                          Şəklin özü (binary data)                             Səliqəli idarəetmə.
+Server Yaddaşı                          Şəklin özü (binary data)                            Səliqəli idarəetmə.
 
 
 Təhlükəsizlik: İstifadəçinin .exe və ya .php kimi zərərli fayllar yükləməsinin qarşısını almalısınız (yalnız .jpg, .pdf və s. icazə verilməlidir).
 Həcm Limiti: ASP.NET-də standart yükləmə limiti var, çox böyük fayllar üçün Program.cs hissəsində tənzimləmə edilməlidir.
+
+
+
+
+                                                                        Architecture
+
+Bizim hal-hazırda istifadə etdiyimiz və yazdığımız projectlər Monolith architecture-dur. nədir bu monolit architecture?
+
+Monolitdə bütün proqram (UI, Business Logic, Data Access) 
+tək bir vahid (unit) kimi yığılır və bir yerdə işə salınır. Hər şey bir "səbətdədir".
+Üstünlükləri:
+Sadəlik: Hazırlamaq, test etmək və serverə yükləmək (deploy) çox asandır.
+
+Performans: Komponentlər arası əlaqə birbaşa yaddaş üzərindən olduğu üçün sürətlidir.
+
+Çatışmazlıqları:
+Spagetti Kod: Layihə böyüdükcə kodlar bir-birinə qarışır.
+
+Sıx Bağlılıq (Tight Coupling): Bir yerdə edilən kiçik dəyişiklik gözlənilməz yerdə xəta verə bilər.
+
+Sərhədlərin Olmaması: Database məntiqi ilə biznes məntiqi çox vaxt iç-içe keçir.
+
+Robert C. Martin (Uncle Bob) tərəfindən məşhurlaşdırılan bu arxitekturanın ana hədəfi 
+Dependency Inversion (Asılılıqların tərsinə çevrilməsi) prinsipidir. Burada məqsəd proqramın nüvəsini 
+(Business Logic) xarici faktorlardan (Database, UI, Frameworks) tam müstəqil etməkdir.
+
+Clean architecture-unda bir neçə növü var ki bunların hər birinin öz hissəsinə uyğun işləyir.
+Bunların hər biri proqram təminatının daha nizamlı olması üçün yaradılıb, lakin yanaşmaları fərqlidir.
+
+                                                        1. N-Tier (Layered) Architecture
+Bu, ənənəvi və ən çox yayılmış yanaşmadır. Burada proqram "laylar" halında yuxarıdan aşağıya doğru düzülür.
+Qatların sırası: Presentation (UI) → Business Logic (BLL) → Data Access (DAL) → Database.
+Asılılıq (Dependency): Yuxarıdakı qat həmişə aşağıdakından asılıdır. Məsələn, sizin Controller (UI) 
+birbaşa Servisdən, Servis isə birbaşa Entity Framework-dən (DAL) asılıdır.
+
+Mənfi cəhəti: Ən böyük problem Database-in mərkəzdə olmasıdır. Əgər bazada bir sütun adını dəyişsəniz, 
+bu dəyişiklik zəncirvari reaksiya kimi bütün layları (DAL, BLL və UI) "qırmalı" olur. Bu, Tight Coupling (sıx bağlılıq) yaradır.
+
+Bu architecture ibarətdir:
+- Domain - Core - Models,Enums etc..
+- Application - Use scenaries - contracts, DTOs.
+- Infrastructure - Realization - EF, Identity, inner API.
+- API (Entrypoint) - Controller, Middlewares, DI. Without BL
+
+
+2. Onion Architecture (Soğan Arxitekturası)
+2008-ci ildə Jeffrey Palermo tərəfindən təklif edilib. Adından da göründüyü kimi, burada laylar 
+bir-birinin üstündə deyil, bir-birinin daxilindədir.
+
+Mərkəzdə nə var?: Ən daxili dairədə Domain (Entities) yerləşir. Onun ətrafında Domain Services (Interfaces), 
+onun da ətrafında Application Services durur.
+
+Əsas Qayda: Asılılıqlar həmişə mərkəzə doğru yönəlir.
+
+Database haradadır?: N-Tier-dən fərqli olaraq, burada Database mərkəzdə deyil, ən kənar laydadır (Infrastructure).
+
+Üstünlüyü: Sizin biznes məntiqiniz (Domain) heç bir xarici texnologiyadan (SQL Server, Entity Framework və s.) 
+asılı deyil. Siz bazanı dəyişsəniz belə, proqramın "ürəyi" olan Domain layına toxunmursunuz.
+
+3. Clean Architecture (Uncle Bob)
+Clean Architecture əslində Onion Architecture-ın daha da təkmilləşdirilmiş və detallandırılmış versiyasıdır.
+Robert C. Martin (Uncle Bob) tərəfindən formalaşdırılıb.
+Bu arxitekturada əsas məqsəd "Use Case" anlayışını önə çıxarmaqdır.
+
+Clean Architecture-ın əsas layları:
+Entities (Domain): Ən daxili hissə. Biznes qaydaları və obyektləri burada olur. (Məsələn: Invoice, Customer klassları).
+
+Use Cases (Application): Proqramın nə iş gördüyünü təsvir edir. Məsələn: "İnvoys yaradanda müştəriyə mail göndər" məntiqi burada yazılır.
+
+Interface Adapters: Bura Controller-lər, Presenter-lər və Repository interfeysləri daxildir. Məlumatı UI-dan gələn 
+formadan Use Case-in başa düşəcəyi formaya salır.
+
+Frameworks & Drivers: Ən kənar təbəqə. Database (EF Core), UI (React/Angular), Cihazlar (Web/Mobile), 
+External API-lar (Sms Service) buradadır.
+
+
 
 
 

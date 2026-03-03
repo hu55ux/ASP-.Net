@@ -185,11 +185,9 @@ namespace ASP_.NET_InvoiceManagementAuth.Migrations
 
             modelBuilder.Entity("ASP_.NET_InvoiceManagementAuth.Models.InvoiceAttachment", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("ContentType")
                         .IsRequired()
